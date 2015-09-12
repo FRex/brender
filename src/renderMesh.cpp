@@ -3,7 +3,7 @@
 #include "Mesh.hpp"
 #include "Rasterizer.hpp"
 
-const float kProjPlaneDist = 100.f;
+const float kProjPlaneDist = 320.f;
 
 void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat)
 {
@@ -38,7 +38,6 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat)
         bv = mat * bv;
         cv = mat * cv;
 
-        const float kProjPlaneDist = 100.f;
         const float kInvProjPlaneDist = 1.f / kProjPlaneDist;
 
         const float screenwidth = 640.f;
