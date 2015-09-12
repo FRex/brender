@@ -15,6 +15,8 @@ m_pixels(static_cast<unsigned*>(pixels)) {
     //    addVertex(100, 100, 0xff, 10.f);
 }
 
+//z of the cross product (2D)
+
 static inline float crossProduct(float ax, float ay, float bx, float by)
 {
     return ax * by - ay * bx;
@@ -50,6 +52,8 @@ static inline unsigned mix3colors(unsigned c1, float v1, unsigned c2, float v2, 
     int bf = b1 * v1 + b2 * v2 + b3 * v3;
     return (rf << 16) + (gf << 8) + bf;
 }
+
+//clip bayocentric aabb to screen
 
 void adjustToView(int& x1, int& y1, int& x2, int& y2)
 {
@@ -88,6 +92,11 @@ void Rasterizer::rasterize()
         int y3 = m_vertices[i + 2].y;
         unsigned c3 = m_vertices[i + 2].color;
         float d3 = m_vertices[i + 2].depth;
+
+        //don't render triangles that might have been incorrectly
+        //casted due to being behind the camera
+        if(d1 < 0.f || d2 < 0.f || d3 < 0.f)
+            continue;
 
         int maxX = max(x1, x2, x3);
         int minX = min(x1, x2, x3);

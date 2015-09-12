@@ -8,6 +8,7 @@
 #include "Mesh.hpp"
 
 #include "renderMesh.hpp"
+#include "makeMesh.hpp"
 
 arma::mat44 translate(float x, float y, float z)
 {
@@ -99,51 +100,9 @@ int main(int argc, char ** argv)
     printf("%s\n", SDL_GetPixelFormatName(sur->format->format));
 
     Mesh mesh;
-    const float kCubeSide = 150.f;
-
-    const unsigned colors[8] = {
-        0xff0000, //0 = red
-        0x00ff00, //1 = green
-        0x0000ff, //2 = blue
-        0xffff00, //3 = yellow
-
-        0xff00ff, //4 = magenta
-        0x00ffff, //5 = cyan
-        0xffffff, //6 = white
-        0x000000, //7 = black
-    };
-
     if(argc < 2)
     {
-        mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, -kCubeSide), colors[0])); //0
-        mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, kCubeSide), colors[1])); //1
-        mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, -kCubeSide), colors[2])); //2
-        mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, kCubeSide), colors[3])); //3
-
-        mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, -kCubeSide), colors[4])); //4
-        mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, kCubeSide), colors[5])); //5
-        mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, -kCubeSide), colors[6])); //6
-        mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, kCubeSide), colors[7])); //7
-
-        mesh.setPrimitiveType(EMPT_TRIANGLE);
-        //up && down
-        mesh.addTriangle(3, 2, 6);
-        mesh.addTriangle(3, 7, 6);
-        mesh.addTriangle(0, 1, 5);
-        mesh.addTriangle(0, 4, 5);
-
-        if(0)
-        {
-            //sides
-            mesh.addTriangle(2, 0, 4);
-            mesh.addTriangle(2, 6, 4);
-            mesh.addTriangle(6, 4, 5);
-            mesh.addTriangle(6, 7, 5);
-            mesh.addTriangle(7, 5, 1);
-            mesh.addTriangle(7, 3, 1);
-            mesh.addTriangle(3, 1, 0);
-            mesh.addTriangle(3, 2, 0);
-        }
+        makeCubeMesh(mesh);
     }
     else
     {
@@ -151,7 +110,7 @@ int main(int argc, char ** argv)
     }
     float tx = 0.f;
     float ty = 0.f;
-    float tz = 200.f;
+    float tz = 500.f;
     float rotx = 0.f;
     float roty = 0.f;
     float rotz = 0.f;
