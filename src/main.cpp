@@ -183,7 +183,7 @@ int main(int argc, char ** argv)
 
         bras.rasterize();
         SDL_UpdateWindowSurface(win);
-        SDL_Delay(50); //20 fps for now
+        SDL_Delay(25); //40 fps
     }
 
 

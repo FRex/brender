@@ -1,9 +1,12 @@
 #include "Rasterizer.hpp"
+#include <cmath>
 #include <algorithm>
 #include <float.h>
 #include <cstdio>
 #include <cassert>
 #include "stb_image.h"
+
+using std::modf;
 
 Rasterizer::Rasterizer(void* pixels) :
 m_pixels(static_cast<unsigned*>(pixels))
@@ -138,11 +141,12 @@ void Rasterizer::rasterize()
                 const float w3 = crossProduct(x2 - x1, y2 - y1, x - x1, y - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 if((w2 >= 0) && (w3 >= 0) && (w2 + w3 <= 1))
                 {
+                    float ipart;
                     const float w1 = 1.f - w2 - w3;
                     const unsigned color = mix3colors(c1, w1, c2, w2, c3, w3);
                     const float depth = d1 * w1 + d2 * w2 + d3 * w3;
-                    const float u = u1 * w1 + u2 * w2 + u3 * w3;
-                    const float v = v1 * w1 + v2 * w2 + v3 * w3;
+                    const float u = modf(u1 * w1 + u2 * w2 + u3 * w3, &ipart);
+                    const float v = modf(v1 * w1 + v2 * w2 + v3 * w3, &ipart);
                     const unsigned texel = getTexel(u, v);
                     switch(m_mode)
                     {
@@ -163,16 +167,6 @@ void Rasterizer::rasterize()
             }//for y
         }//for x
     }//for each triangle
-
-    //    float mind = m_depthbuffer[0];
-    //    float maxd = -1000.f;
-    //    for(int i = 0; i < 640 * 480; ++i)
-    //    {
-    //        mind = std::min(mind, m_depthbuffer[i]);
-    //        if(m_depthbuffer[i] < FLT_MAX)
-    //            maxd = std::max(maxd, m_depthbuffer[i]);
-    //    }
-    //    std::printf("min, max = %f, %f\n", mind, maxd);
 }
 
 void Rasterizer::clear()
@@ -207,8 +201,8 @@ void Rasterizer::setPixel(int x, int y, unsigned color, float depth)
 
 unsigned Rasterizer::getTexel(float u, float v) const
 {
-    const int x = std::max(0, std::min<int>(u*m_texx, m_texx - 1));
-    const int y = std::max(0, std::min<int>(v*m_texy, m_texy - 1));
+    const int x = std::max(0, std::min<int>(round(u * m_texx), m_texx - 1));
+    const int y = std::max(0, std::min<int>(round(v * m_texy), m_texy - 1));
     const unsigned char * tex = &m_texture[3 * (x + m_texx * y)];
     return (tex[0] << 16) + (tex[1] << 8) + tex[2];
 }
