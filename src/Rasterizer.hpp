@@ -7,7 +7,9 @@ enum ERENDER_MODE
 {
     ERM_TEXTURES = 0,
     ERM_COLORS,
-
+    ERM_COLORS_TEXTURES,
+    ERM_UV_RED_BLUE,
+    
     ERENDER_MODE_COUNT //keep last
 };
 

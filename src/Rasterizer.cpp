@@ -54,14 +54,35 @@ static inline unsigned mix3colors(unsigned c1, float v1, unsigned c2, float v2, 
     return (rf << 16) + (gf << 8) + bf;
 }
 
-//clip bayocentric aabb to screen
+static inline unsigned mul2colors(unsigned c1, unsigned c2)
+{
+    int r1, g1, b1;
+    int r2, g2, b2;
+    sepcolor(c1, r1, g1, b1);
+    sepcolor(c2, r2, g2, b2);
+    int rf = (r1 * r2) / 255;
+    int gf = (g1 * g2) / 255;
+    int bf = (b1 * b2) / 255;
+    assert(0 <= rf && rf <= 255);
+    assert(0 <= gf && gf <= 255);
+    assert(0 <= bf && bf <= 255);
+    return (rf << 16) + (gf << 8) + bf;
+}
 
-void adjustToView(int& x1, int& y1, int& x2, int& y2)
+static void adjustToView(int& x1, int& y1, int& x2, int& y2)
 {
     x1 = std::max(0, std::min(x1, 640 - 1));
     y1 = std::max(0, std::min(y1, 480 - 1));
     x2 = std::max(0, std::min(x2, 640 - 1));
     y2 = std::max(0, std::min(y2, 480 - 1));
+}
+
+static unsigned rgbf(float r, float g, float b)
+{
+    const int rf = std::max(0, std::min<int>(255, r * 255.f));
+    const int gf = std::max(0, std::min<int>(255, g * 255.f));
+    const int bf = std::max(0, std::min<int>(255, b * 255.f));
+    return (rf << 16) + (gf << 8) + bf;
 }
 
 void Rasterizer::rasterize()
@@ -130,6 +151,12 @@ void Rasterizer::rasterize()
                             break;
                         case ERM_TEXTURES:
                             setPixel(x, y, texel, depth);
+                            break;
+                        case ERM_COLORS_TEXTURES:
+                            setPixel(x, y, mul2colors(color, texel), depth);
+                            break;
+                        case ERM_UV_RED_BLUE:
+                            setPixel(x, y, rgbf(u, 0.f, v), depth);
                             break;
                     }//switch m_mode
                 }//inside

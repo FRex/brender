@@ -130,22 +130,22 @@ int main(int argc, char ** argv)
                 switch(eve.key.keysym.sym)
                 {
                     case 'w':
-                        rotx += pi / 10.f;
+                        rotx += pi / 12.f;
                         break;
                     case 's':
-                        rotx -= pi / 10.f;
+                        rotx -= pi / 12.f;
                         break;
                     case 'a':
-                        rotz += pi / 10.f;
+                        rotz += pi / 12.f;
                         break;
                     case 'd':
-                        rotz -= pi / 10.f;
+                        rotz -= pi / 12.f;
                         break;
                     case 'q':
-                        roty += pi / 10.f;
+                        roty += pi / 12.f;
                         break;
                     case 'e':
-                        roty -= pi / 10.f;
+                        roty -= pi / 12.f;
                         break;
                     case 'i':
                         tz += 10.f;
