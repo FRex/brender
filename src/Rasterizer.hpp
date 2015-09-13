@@ -9,7 +9,7 @@ public:
     Rasterizer(void * pixels);
     void rasterize();
     void clear();
-    void addVertex(int x, int y, unsigned color, float depth);
+    void addVertex(int x, int y, unsigned color, float depth, float u, float v);
 
 private:
     void setPixel(int x, int y, unsigned color, float depth);
@@ -20,6 +20,8 @@ private:
         int x, y;
         unsigned color;
         float depth;
+        float u;
+        float v;
     };
 
     std::vector<Vertex2> m_vertices;

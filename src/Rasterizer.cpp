@@ -57,11 +57,6 @@ void adjustToView(int& x1, int& y1, int& x2, int& y2)
 
 void Rasterizer::rasterize()
 {
-    addVertex(0, 0, 0xff0000, 100000.f);
-    addVertex(50, 0, 0xff00, 100000.f);
-    addVertex(0, 50, 0xff, 100000.f);
-
-
     for(int i = 0; i < 640 * 480; ++i)
         m_depthbuffer[i] = FLT_MAX;
 
@@ -132,14 +127,16 @@ void Rasterizer::clear()
     m_vertices.clear();
 }
 
-void Rasterizer::addVertex(int x, int y, unsigned color, float depth)
+void Rasterizer::addVertex(int x, int y, unsigned color, float depth, float u, float v)
 {
-    Vertex2 v;
-    v.x = x;
-    v.y = y;
-    v.color = color;
-    v.depth = depth;
-    m_vertices.push_back(v);
+    Vertex2 vert;
+    vert.x = x;
+    vert.y = y;
+    vert.color = color;
+    vert.depth = depth;
+    vert.u = u;
+    vert.v = v;
+    m_vertices.push_back(vert);
 }
 
 void Rasterizer::setPixel(int x, int y, unsigned color, float depth)

@@ -18,10 +18,14 @@ class Vertex
 {
 public:
 
-    Vertex(Vector3 position, unsigned color) : position(position), color(color) { }
+    Vertex(Vector3 position, unsigned color) : position(position), color(color), u(0.f), v(0.f) { }
+
+    Vertex(Vector3 position, unsigned color, float u, float v) : position(position), color(color), u(u), v(v) { }
 
     Vector3 position;
     unsigned color;
+    float u;
+    float v;
 };
 
 #endif	/* VERTEX_HPP */
