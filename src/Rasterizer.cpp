@@ -109,22 +109,25 @@ void Rasterizer::rasterize()
         int y1 = m_vertices[i].y;
         unsigned c1 = m_vertices[i].color;
         float d1 = m_vertices[i].depth;
-        float u1 = m_vertices[i].u;
-        float v1 = m_vertices[i].v;
+        float u1 = m_vertices[i].u / d1;
+        float v1 = m_vertices[i].v / d1;
+        float d1i = 1.f / m_vertices[i].depth;
 
         int x2 = m_vertices[i + 1].x;
         int y2 = m_vertices[i + 1].y;
         unsigned c2 = m_vertices[i + 1].color;
         float d2 = m_vertices[i + 1].depth;
-        float u2 = m_vertices[i + 1].u;
-        float v2 = m_vertices[i + 1].v;
+        float u2 = m_vertices[i + 1].u / d2;
+        float v2 = m_vertices[i + 1].v / d2;
+        float d2i = 1.f / m_vertices[i + 1].depth;
 
         int x3 = m_vertices[i + 2].x;
         int y3 = m_vertices[i + 2].y;
         unsigned c3 = m_vertices[i + 2].color;
         float d3 = m_vertices[i + 2].depth;
-        float u3 = m_vertices[i + 2].u;
-        float v3 = m_vertices[i + 2].v;
+        float u3 = m_vertices[i + 2].u / d3;
+        float v3 = m_vertices[i + 2].v / d3;
+        float d3i = 1.f / m_vertices[i + 2].depth;
 
         //don't render triangles that might have been incorrectly
         //casted due to being behind the camera
@@ -150,12 +153,13 @@ void Rasterizer::rasterize()
                 {
                     const float w1 = 1.f - w2 - w3;
                     const float depth = d1 * w1 + d2 * w2 + d3 * w3;
+                    const float depthi = d1i * w1 + d2i * w2 + d3i * w3;
                     if(canSetPixel(x, y, depth))
                     {
                         const unsigned color = mix3colors(c1, w1, c2, w2, c3, w3);
                         const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3);
                         const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3);
-                        const unsigned texel = getTexel(u, v);
+                        const unsigned texel = getTexel(u / depthi, v / depthi);
                         switch(m_mode)
                         {
                             case ERM_COLORS:
