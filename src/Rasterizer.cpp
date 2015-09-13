@@ -5,15 +5,7 @@
 #include <cassert>
 
 Rasterizer::Rasterizer(void* pixels) :
-m_pixels(static_cast<unsigned*>(pixels)) {
-    //    addVertex(0, 0, 0xff0000, 2.f);
-    //    addVertex(100, 0, 0xff00, 2.f);
-    //    addVertex(50, 100, 0xff, 2.f);
-    //
-    //    addVertex(50, 0, 0xff0000, 0.f);
-    //    addVertex(150, 0, 0xff00, 10.f);
-    //    addVertex(100, 100, 0xff, 10.f);
-}
+m_pixels(static_cast<unsigned*>(pixels)) { }
 
 //z of the cross product (2D)
 
@@ -65,9 +57,9 @@ void adjustToView(int& x1, int& y1, int& x2, int& y2)
 
 void Rasterizer::rasterize()
 {
-    addVertex(50, 0, 0xff0000, 100000.f);
-    addVertex(150, 0, 0xff00, 100000.f);
-    addVertex(100, 100, 0xff, 100000.f);
+    addVertex(0, 0, 0xff0000, 100000.f);
+    addVertex(50, 0, 0xff00, 100000.f);
+    addVertex(0, 50, 0xff, 100000.f);
 
 
     for(int i = 0; i < 640 * 480; ++i)

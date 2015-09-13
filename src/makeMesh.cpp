@@ -29,20 +29,23 @@ void makeCubeMesh(Mesh& mesh)
 
     mesh.setPrimitiveType(EMPT_TRIANGLE);
     //up && down
-    mesh.addTriangle(3, 6, 2);
-    mesh.addTriangle(3, 7, 6);
-    mesh.addTriangle(0, 1, 5);
-    mesh.addTriangle(0, 4, 5);
+    //    mesh.addTriangle(3, 6, 2);
+    //    mesh.addTriangle(3, 7, 6);
+    //    mesh.addTriangle(0, 1, 5);
+    //    mesh.addTriangle(0, 4, 5);
 
     if(1)
     {
         //sides
-        mesh.addTriangle(2, 4, 0);
-        mesh.addTriangle(2, 6, 4);
+        mesh.addTriangle(0, 2, 4);
+        mesh.addTriangle(6, 4, 2);
+
         mesh.addTriangle(6, 5, 4);
         mesh.addTriangle(6, 7, 5);
+
         mesh.addTriangle(7, 1, 5);
         mesh.addTriangle(7, 3, 1);
+
         mesh.addTriangle(3, 0, 1);
         mesh.addTriangle(3, 2, 0);
     }
