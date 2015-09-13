@@ -88,6 +88,13 @@ static unsigned rgbf(float r, float g, float b)
     return (rf << 16) + (gf << 8) + bf;
 }
 
+static float normalizeTCoords(float x)
+{
+    float u;
+    x = modf(x, &u);
+    return std::fabs(x);
+}
+
 void Rasterizer::rasterize()
 {
     for(int i = 0; i < 640 * 480; ++i)
@@ -141,12 +148,11 @@ void Rasterizer::rasterize()
                 const float w3 = crossProduct(x2 - x1, y2 - y1, x - x1, y - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 if((w2 >= 0) && (w3 >= 0) && (w2 + w3 <= 1))
                 {
-                    float ipart;
                     const float w1 = 1.f - w2 - w3;
                     const unsigned color = mix3colors(c1, w1, c2, w2, c3, w3);
                     const float depth = d1 * w1 + d2 * w2 + d3 * w3;
-                    const float u = modf(u1 * w1 + u2 * w2 + u3 * w3, &ipart);
-                    const float v = modf(v1 * w1 + v2 * w2 + v3 * w3, &ipart);
+                    const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3);
+                    const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3);
                     const unsigned texel = getTexel(u, v);
                     switch(m_mode)
                     {
