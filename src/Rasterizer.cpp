@@ -3,11 +3,19 @@
 #include <float.h>
 #include <cstdio>
 #include <cassert>
+#include "stb_image.h"
 
 Rasterizer::Rasterizer(void* pixels) :
-m_pixels(static_cast<unsigned*>(pixels)) { }
+m_pixels(static_cast<unsigned*>(pixels))
+{
+    int n;
+    m_texture = stbi_load("texture.png", &m_texx, &m_texy, &n, 3);
+}
 
-//z of the cross product (2D)
+Rasterizer::~Rasterizer()
+{
+    stbi_image_free(m_texture);
+}
 
 static inline float crossProduct(float ax, float ay, float bx, float by)
 {
@@ -69,16 +77,22 @@ void Rasterizer::rasterize()
         int y1 = m_vertices[i].y;
         unsigned c1 = m_vertices[i].color;
         float d1 = m_vertices[i].depth;
+        float u1 = m_vertices[i].u;
+        float v1 = m_vertices[i].v;
 
         int x2 = m_vertices[i + 1].x;
         int y2 = m_vertices[i + 1].y;
         unsigned c2 = m_vertices[i + 1].color;
         float d2 = m_vertices[i + 1].depth;
+        float u2 = m_vertices[i + 1].u;
+        float v2 = m_vertices[i + 1].v;
 
         int x3 = m_vertices[i + 2].x;
         int y3 = m_vertices[i + 2].y;
         unsigned c3 = m_vertices[i + 2].color;
         float d3 = m_vertices[i + 2].depth;
+        float u3 = m_vertices[i + 2].u;
+        float v3 = m_vertices[i + 2].v;
 
         //don't render triangles that might have been incorrectly
         //casted due to being behind the camera
@@ -103,8 +117,11 @@ void Rasterizer::rasterize()
                 if((w2 >= 0) && (w3 >= 0) && (w2 + w3 <= 1))
                 {
                     const float w1 = 1.f - w2 - w3;
-                    const unsigned c = mix3colors(c1, w1, c2, w2, c3, w3);
+                    //                    const unsigned c = mix3colors(c1, w1, c2, w2, c3, w3);
                     const float depth = d1 * w1 + d2 * w2 + d3 * w3;
+                    const float u = u1 * w1 + u2 * w2 + u3 * w3;
+                    const float v = v1 * w1 + v2 * w2 + v3 * w3;
+                    const unsigned c = getTexel(u, v);
                     setPixel(x, y, c, depth);
                 }//inside
             }//for y
@@ -150,4 +167,9 @@ void Rasterizer::setPixel(int x, int y, unsigned color, float depth)
         m_pixels[x + y * 640] = color;
         m_depthbuffer[x + y * 640] = depth;
     }
+}
+
+unsigned Rasterizer::getTexel(float u, float v)
+{
+    return 0xff0000;
 }
