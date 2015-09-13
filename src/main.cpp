@@ -165,6 +165,9 @@ int main(int argc, char ** argv)
                     case 'o':
                         ty -= 10.f;
                         break;
+                    case ' ':
+                        bras.toggleRenderMode();
+                        break;
                 }
             }
         }//while sdl poll event eve

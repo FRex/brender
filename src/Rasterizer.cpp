@@ -10,6 +10,7 @@ m_pixels(static_cast<unsigned*>(pixels))
 {
     int n;
     m_texture = stbi_load("texture.png", &m_texx, &m_texy, &n, 3);
+    m_mode = ERM_TEXTURES;
 }
 
 Rasterizer::~Rasterizer()
@@ -117,12 +118,20 @@ void Rasterizer::rasterize()
                 if((w2 >= 0) && (w3 >= 0) && (w2 + w3 <= 1))
                 {
                     const float w1 = 1.f - w2 - w3;
-                    //                    const unsigned c = mix3colors(c1, w1, c2, w2, c3, w3);
+                    const unsigned color = mix3colors(c1, w1, c2, w2, c3, w3);
                     const float depth = d1 * w1 + d2 * w2 + d3 * w3;
                     const float u = u1 * w1 + u2 * w2 + u3 * w3;
                     const float v = v1 * w1 + v2 * w2 + v3 * w3;
-                    const unsigned c = getTexel(u, v);
-                    setPixel(x, y, c, depth);
+                    const unsigned texel = getTexel(u, v);
+                    switch(m_mode)
+                    {
+                        case ERM_COLORS:
+                            setPixel(x, y, color, depth);
+                            break;
+                        case ERM_TEXTURES:
+                            setPixel(x, y, texel, depth);
+                            break;
+                    }//switch m_mode
                 }//inside
             }//for y
         }//for x
@@ -169,7 +178,15 @@ void Rasterizer::setPixel(int x, int y, unsigned color, float depth)
     }
 }
 
-unsigned Rasterizer::getTexel(float u, float v)
+unsigned Rasterizer::getTexel(float u, float v) const
 {
-    return 0xff0000;
+    const int x = std::max(0, std::min<int>(u*m_texx, m_texx - 1));
+    const int y = std::max(0, std::min<int>(v*m_texy, m_texy - 1));
+    const unsigned char * tex = &m_texture[3 * (x + m_texx * y)];
+    return (tex[0] << 16) + (tex[1] << 8) + tex[2];
+}
+
+void Rasterizer::toggleRenderMode()
+{
+    m_mode = (m_mode + 1) % ERENDER_MODE_COUNT;
 }

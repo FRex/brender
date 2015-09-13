@@ -17,22 +17,22 @@ void makeCubeMesh(Mesh& mesh)
         0x000000, //7 = black
     };
 
-    mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, -kCubeSide), colors[0])); //0
-    mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, kCubeSide), colors[1])); //1
-    mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, -kCubeSide), colors[2])); //2
-    mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, kCubeSide), colors[3])); //3
+    mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, -kCubeSide), colors[0], 0.f, 0.f)); //0
+    mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, kCubeSide), colors[1], 1.f, 0.f)); //1
+    mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, -kCubeSide), colors[2], 0.f, 1.f)); //2
+    mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, kCubeSide), colors[3], 1.f, 1.f)); //3
 
-    mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, -kCubeSide), colors[4])); //4
-    mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, kCubeSide), colors[5])); //5
-    mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, -kCubeSide), colors[6])); //6
-    mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, kCubeSide), colors[7])); //7
+    mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, -kCubeSide), colors[4], 1.f, 0.f)); //4
+    mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, kCubeSide), colors[5], 0.f, 0.f)); //5
+    mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, -kCubeSide), colors[6], 1.f, 1.f)); //6
+    mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, kCubeSide), colors[7], 0.f, 1.f)); //7
 
     mesh.setPrimitiveType(EMPT_TRIANGLE);
     //up && down
-    //    mesh.addTriangle(3, 6, 2);
-    //    mesh.addTriangle(3, 7, 6);
-    //    mesh.addTriangle(0, 1, 5);
-    //    mesh.addTriangle(0, 4, 5);
+    mesh.addTriangle(3, 6, 2);
+    mesh.addTriangle(3, 7, 6);
+    mesh.addTriangle(0, 1, 5);
+    mesh.addTriangle(0, 4, 5);
 
     if(1)
     {
