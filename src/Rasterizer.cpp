@@ -149,26 +149,29 @@ void Rasterizer::rasterize()
                 if((w2 >= 0) && (w3 >= 0) && (w2 + w3 <= 1))
                 {
                     const float w1 = 1.f - w2 - w3;
-                    const unsigned color = mix3colors(c1, w1, c2, w2, c3, w3);
                     const float depth = d1 * w1 + d2 * w2 + d3 * w3;
-                    const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3);
-                    const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3);
-                    const unsigned texel = getTexel(u, v);
-                    switch(m_mode)
+                    if(canSetPixel(x, y, depth))
                     {
-                        case ERM_COLORS:
-                            setPixel(x, y, color, depth);
-                            break;
-                        case ERM_TEXTURES:
-                            setPixel(x, y, texel, depth);
-                            break;
-                        case ERM_COLORS_TEXTURES:
-                            setPixel(x, y, mul2colors(color, texel), depth);
-                            break;
-                        case ERM_UV_RED_BLUE:
-                            setPixel(x, y, rgbf(u, 0.f, v), depth);
-                            break;
-                    }//switch m_mode
+                        const unsigned color = mix3colors(c1, w1, c2, w2, c3, w3);
+                        const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3);
+                        const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3);
+                        const unsigned texel = getTexel(u, v);
+                        switch(m_mode)
+                        {
+                            case ERM_COLORS:
+                                setPixel(x, y, color, depth);
+                                break;
+                            case ERM_TEXTURES:
+                                setPixel(x, y, texel, depth);
+                                break;
+                            case ERM_COLORS_TEXTURES:
+                                setPixel(x, y, mul2colors(color, texel), depth);
+                                break;
+                            case ERM_UV_RED_BLUE:
+                                setPixel(x, y, rgbf(u, 0.f, v), depth);
+                                break;
+                        }//switch m_mode
+                    }//can set pixel
                 }//inside
             }//for y
         }//for x
@@ -192,17 +195,23 @@ void Rasterizer::addVertex(int x, int y, unsigned color, float depth, float u, f
     m_vertices.push_back(vert);
 }
 
-void Rasterizer::setPixel(int x, int y, unsigned color, float depth)
+bool Rasterizer::canSetPixel(int x, int y, float depth)
 {
     if(depth < 0.f)
-        return;
+        return false;
 
     assert(0 <= x && x < 640 && 0 <= y && y < 480);
     if(m_depthbuffer[x + y * 640] > depth)
-    {
-        m_pixels[x + y * 640] = color;
-        m_depthbuffer[x + y * 640] = depth;
-    }
+        return true;
+
+    return false;
+}
+
+void Rasterizer::setPixel(int x, int y, unsigned color, float depth)
+{
+    assert(0 <= x && x < 640 && 0 <= y && y < 480);
+    m_pixels[x + y * 640] = color;
+    m_depthbuffer[x + y * 640] = depth;
 }
 
 unsigned Rasterizer::getTexel(float u, float v) const

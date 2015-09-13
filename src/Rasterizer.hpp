@@ -9,7 +9,7 @@ enum ERENDER_MODE
     ERM_COLORS,
     ERM_COLORS_TEXTURES,
     ERM_UV_RED_BLUE,
-    
+
     ERENDER_MODE_COUNT //keep last
 };
 
@@ -24,6 +24,7 @@ public:
     void toggleRenderMode();
 
 private:
+    bool canSetPixel(int x, int y, float depth);
     void setPixel(int x, int y, unsigned color, float depth);
     unsigned getTexel(float u, float v) const;
 
