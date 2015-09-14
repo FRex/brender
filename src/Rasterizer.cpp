@@ -95,6 +95,15 @@ static float normalizeTCoords(float x)
     return std::fabs(x);
 }
 
+static void decomposeColorF(unsigned c, float& r, float& g, float& b)
+{
+    b = (c & 0xff) / 255.f;
+    c >>= 8;
+    g = (c & 0xff) / 255.f;
+    c >>= 8;
+    r = (c & 0xff) / 255.f;
+}
+
 void Rasterizer::rasterize()
 {
     for(int i = 0; i < 640 * 480; ++i)
@@ -107,24 +116,36 @@ void Rasterizer::rasterize()
     {
         int x1 = m_vertices[i].x;
         int y1 = m_vertices[i].y;
-        unsigned c1 = m_vertices[i].color;
+        float r1, g1, b1;
+        decomposeColorF(m_vertices[i].color, r1, g1, b1);
         float d1 = m_vertices[i].depth;
+        r1 /= d1;
+        g1 /= d1;
+        b1 /= d1;
         float u1 = m_vertices[i].u / d1;
         float v1 = m_vertices[i].v / d1;
         float d1i = 1.f / m_vertices[i].depth;
 
         int x2 = m_vertices[i + 1].x;
         int y2 = m_vertices[i + 1].y;
-        unsigned c2 = m_vertices[i + 1].color;
+        float r2, g2, b2;
+        decomposeColorF(m_vertices[i + 1].color, r2, g2, b2);
         float d2 = m_vertices[i + 1].depth;
+        r2 /= d2;
+        g2 /= d2;
+        b2 /= d2;
         float u2 = m_vertices[i + 1].u / d2;
         float v2 = m_vertices[i + 1].v / d2;
         float d2i = 1.f / m_vertices[i + 1].depth;
 
         int x3 = m_vertices[i + 2].x;
         int y3 = m_vertices[i + 2].y;
-        unsigned c3 = m_vertices[i + 2].color;
+        float r3, g3, b3;
+        decomposeColorF(m_vertices[i + 2].color, r3, g3, b3);
         float d3 = m_vertices[i + 2].depth;
+        r3 /= d3;
+        g3 /= d3;
+        b3 /= d3;
         float u3 = m_vertices[i + 2].u / d3;
         float v3 = m_vertices[i + 2].v / d3;
         float d3i = 1.f / m_vertices[i + 2].depth;
@@ -156,20 +177,22 @@ void Rasterizer::rasterize()
                     const float depthi = d1i * w1 + d2i * w2 + d3i * w3;
                     if(canSetPixel(x, y, depth))
                     {
-                        const unsigned color = mix3colors(c1, w1, c2, w2, c3, w3);
+                        const float r = (r1 * w1 + r2 * w2 + r3 * w3) / depthi;
+                        const float g = (g1 * w1 + g2 * w2 + g3 * w3) / depthi;
+                        const float b = (b1 * w1 + b2 * w2 + b3 * w3) / depthi;
                         const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3) / depthi;
                         const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3) / depthi;
                         const unsigned texel = getTexel(u, v);
                         switch(m_mode)
                         {
                             case ERM_COLORS:
-                                setPixel(x, y, color, depth);
+                                setPixel(x, y, rgbf(r, g, b), depth);
                                 break;
                             case ERM_TEXTURES:
                                 setPixel(x, y, texel, depth);
                                 break;
                             case ERM_COLORS_TEXTURES:
-                                setPixel(x, y, mul2colors(color, texel), depth);
+                                setPixel(x, y, mul2colors(rgbf(r, g, b), texel), depth);
                                 break;
                             case ERM_UV_RED_BLUE:
                                 setPixel(x, y, rgbf(u, 0.f, v), depth);
