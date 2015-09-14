@@ -75,8 +75,17 @@ unsigned rndrgb()
     return (r << 16)+(g << 8) + b;
 }
 
-void loadMesh(Mesh& mesh, const char * filename)
+static unsigned rgbf(float r, float g, float b)
 {
+    const int rf = std::max(0, std::min<int>(255, r * 255.f));
+    const int gf = std::max(0, std::min<int>(255, g * 255.f));
+    const int bf = std::max(0, std::min<int>(255, b * 255.f));
+    return (rf << 16) + (gf << 8) + bf;
+}
+
+void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
+{
+    const bool rnd = (0 == std::strcmp(argv2, "random"));
     std::printf("Loading file: %s\n", filename);
     std::ifstream file(filename);
     mesh.clear();
@@ -87,7 +96,14 @@ void loadMesh(Mesh& mesh, const char * filename)
     file >> scale;
     while(file >> x >> y >> z)
     {
-        mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rndrgb()));
+        if(rnd)
+        {
+            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rndrgb()));
+        }
+        else
+        {
+            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rgbf(x, y, z)));
+        }
         mesh.addIndex(c++);
     }
     std::printf("%u total vertices, scale is %f\n", c, scale);
@@ -121,7 +137,14 @@ int main(int argc, char ** argv)
     }
     else
     {
-        loadMesh(mesh, argv[1]);
+        if(argc < 3)
+        {
+            loadMesh(mesh, argv[1], "");
+        }
+        else
+        {
+            loadMesh(mesh, argv[1], argv[2]);
+        }
     }
     float tx = 0.f;
     float ty = 0.f;
