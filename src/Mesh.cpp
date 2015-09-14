@@ -1,10 +1,9 @@
 #include "Mesh.hpp"
 
-Mesh::Mesh() : m_primtype(EMPT_LINE) { }
+Mesh::Mesh() { }
 
 void Mesh::clear()
 {
-    m_primtype = EMPT_LINE;
     m_indices.clear();
     m_vertices.clear();
 }
@@ -60,14 +59,4 @@ unsigned Mesh::getIndex(unsigned idx) const
 const unsigned* Mesh::getIndices() const
 {
     return &m_indices[0];
-}
-
-void Mesh::setPrimitiveType(EMESH_PRIMITIVE_TYPE type)
-{
-    m_primtype = type;
-}
-
-EMESH_PRIMITIVE_TYPE Mesh::getPrimitiveType() const
-{
-    return m_primtype;
 }

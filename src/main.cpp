@@ -92,7 +92,6 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
     std::printf("Loading file: %s\n", filename);
     std::ifstream file(filename);
     mesh.clear();
-    mesh.setPrimitiveType(EMPT_TRIANGLE);
     float scale;
     unsigned icount, vcount;
     unsigned idx;
@@ -138,6 +137,7 @@ int main(int argc, char ** argv)
     win = SDL_CreateWindow("BRender", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
     sur = SDL_GetWindowSurface(win);
 
+    std::vector<BufferedVertice> buffer;
     Rasterizer bras(sur->pixels);
     printf("%s\n", SDL_GetPixelFormatName(sur->format->format));
 
@@ -228,7 +228,7 @@ int main(int argc, char ** argv)
 
         bras.clear();
 
-        draw(bras, mesh, translate(tx, ty, tz) * rotateZ(rotz) * rotateY(roty) * rotateX(rotx));
+        draw(bras, mesh, translate(tx, ty, tz) * rotateZ(rotz) * rotateY(roty) * rotateX(rotx), buffer);
 
 
         bras.rasterize();

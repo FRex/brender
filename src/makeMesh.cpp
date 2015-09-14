@@ -27,7 +27,6 @@ void makeCubeMesh(Mesh& mesh)
     mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, -kCubeSide), colors[6], 1.f, 1.f)); //6
     mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, kCubeSide), colors[7], -1.f, 1.f)); //7
 
-    mesh.setPrimitiveType(EMPT_TRIANGLE);
     //up && down
     mesh.addTriangle(3, 6, 2);
     mesh.addTriangle(3, 7, 6);
