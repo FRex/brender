@@ -157,9 +157,9 @@ void Rasterizer::rasterize()
                     if(canSetPixel(x, y, depth))
                     {
                         const unsigned color = mix3colors(c1, w1, c2, w2, c3, w3);
-                        const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3);
-                        const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3);
-                        const unsigned texel = getTexel(u / depthi, v / depthi);
+                        const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3) / depthi;
+                        const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3) / depthi;
+                        const unsigned texel = getTexel(u, v);
                         switch(m_mode)
                         {
                             case ERM_COLORS:
