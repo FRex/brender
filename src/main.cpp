@@ -80,8 +80,7 @@ void loadMesh(Mesh& mesh, const char * filename)
     while(file >> x >> y >> z)
     {
         mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), 0xff0000));
-        mesh.addTriangle(c, c + 1u, c + 2u);
-        c += 3u;
+        mesh.addIndex(c++);
     }
     std::printf("%u total vertices, scale is %f\n", c, scale);
 }
