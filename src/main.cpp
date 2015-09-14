@@ -77,6 +77,9 @@ unsigned rndrgb()
 
 static unsigned rgbf(float r, float g, float b)
 {
+    r = std::fabs(r);
+    g = std::fabs(g);
+    b = std::fabs(b);
     const int rf = std::max(0, std::min<int>(255, r * 255.f));
     const int gf = std::max(0, std::min<int>(255, g * 255.f));
     const int bf = std::max(0, std::min<int>(255, b * 255.f));
@@ -91,11 +94,20 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
     mesh.clear();
     mesh.setPrimitiveType(EMPT_TRIANGLE);
     float scale;
+    unsigned icount, vcount;
+    unsigned idx;
     float x, y, z;
-    unsigned c = 0u;
-    file >> scale;
-    while(file >> x >> y >> z)
+    file >> scale >> icount >> vcount;
+
+    for(int i = 0; i < icount; ++i)
     {
+        file >> idx;
+        mesh.addIndex(idx);
+    }
+
+    for(int i = 0; i < vcount; ++i)
+    {
+        file >> x >> y >> z;
         if(rnd)
         {
             mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rndrgb()));
@@ -104,9 +116,8 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
         {
             mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rgbf(x, y, z)));
         }
-        mesh.addIndex(c++);
     }
-    std::printf("%u total vertices, scale is %f\n", c, scale);
+    std::printf("vertices, indices, scale = (%u, %u, %f)\n", vcount, icount, scale);
 }
 
 const char * modenames[] = {
