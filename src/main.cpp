@@ -67,6 +67,14 @@ arma::mat44 rotateZ(float y)
 
 const float pi = 3.1415f; // ^_^...
 
+unsigned rndrgb()
+{
+    const int r = std::rand() & 0xff;
+    const int g = std::rand() & 0xff;
+    const int b = std::rand() & 0xff;
+    return (r << 16)+(g << 8) + b;
+}
+
 void loadMesh(Mesh& mesh, const char * filename)
 {
     std::printf("Loading file: %s\n", filename);
@@ -79,7 +87,7 @@ void loadMesh(Mesh& mesh, const char * filename)
     file >> scale;
     while(file >> x >> y >> z)
     {
-        mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), 0xff0000));
+        mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rndrgb()));
         mesh.addIndex(c++);
     }
     std::printf("%u total vertices, scale is %f\n", c, scale);
@@ -94,6 +102,7 @@ const char * modenames[] = {
 
 int main(int argc, char ** argv)
 {
+    std::srand(std::time(0x0));
     SDL_Window * win = NULL;
     SDL_Surface * sur = NULL;
     int run = 1;
