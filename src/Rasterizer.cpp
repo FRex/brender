@@ -168,9 +168,12 @@ void Rasterizer::rasterize()
         {
             for(int y = minY; y <= maxY; ++y)
             {
-                const float w2 = crossProduct(x - x1, y - y1, x3 - x1, y3 - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
-                const float w3 = crossProduct(x2 - x1, y2 - y1, x - x1, y - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
-                if((w2 >= 0) && (w3 >= 0) && (w2 + w3 <= 1))
+                //                const float w2 = crossProduct(x - x1, y - y1, x3 - x1, y3 - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
+                //                const float w3 = crossProduct(x2 - x1, y2 - y1, x - x1, y - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
+                //unrolled:
+                const float w2 = ((x - x1)*(y3 - y1)-(y - y1)*(x3 - x1)) / (float)((x2 - x1)*(y3 - y1)-(y2 - y1)*(x3 - x1));
+                const float w3 = ((x2 - x1)*(y - y1)-(y2 - y1)*(x - x1)) / (float)((x2 - x1)*(y3 - y1)-(y2 - y1)*(x3 - x1));
+                if((w2 >= 0.f) && (w3 >= 0.f) && (w2 + w3 <= 1.f))
                 {
                     const float w1 = 1.f - w2 - w3;
                     const float depth = d1 * w1 + d2 * w2 + d3 * w3;
