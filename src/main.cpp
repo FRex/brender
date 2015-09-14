@@ -85,6 +85,13 @@ void loadMesh(Mesh& mesh, const char * filename)
     std::printf("%u total vertices, scale is %f\n", c, scale);
 }
 
+const char * modenames[] = {
+    "ERM_TEXTURES",
+    "ERM_COLORS",
+    "ERM_COLORS_TEXTURES",
+    "ERM_UV_RED_BLUE",
+};
+
 int main(int argc, char ** argv)
 {
     SDL_Window * win = NULL;
@@ -174,6 +181,7 @@ int main(int argc, char ** argv)
 
         std::printf("R: %f, %f, %f\n", rotx, roty, rotz);
         std::printf("T: %f, %f, %f\n", tx, ty, tz);
+        std::printf("Mode: %s\n", modenames[bras.getRenderMode()]);
 
         bras.clear();
 

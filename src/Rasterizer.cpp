@@ -253,3 +253,8 @@ void Rasterizer::toggleRenderMode()
 {
     m_mode = (m_mode + 1) % ERENDER_MODE_COUNT;
 }
+
+int Rasterizer::getRenderMode()
+{
+    return m_mode;
+}

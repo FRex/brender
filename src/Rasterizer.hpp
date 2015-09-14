@@ -22,6 +22,7 @@ public:
     void clear();
     void addVertex(int x, int y, unsigned color, float depth, float u, float v);
     void toggleRenderMode();
+    int getRenderMode();
 
 private:
     bool canSetPixel(int x, int y, float depth);
