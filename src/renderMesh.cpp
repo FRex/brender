@@ -38,8 +38,6 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat)
         bv = mat * bv;
         cv = mat * cv;
 
-        const float kInvProjPlaneDist = 1.f / kProjPlaneDist;
-
         const float screenwidth = 640.f;
         const float screenheight = 480.f;
 
@@ -52,18 +50,9 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat)
         cv(0) = cv(0) * (kProjPlaneDist / std::fabs(cv(2))) + screenwidth / 2.f;
         cv(1) = cv(1) * (kProjPlaneDist / std::fabs(cv(2))) + screenheight / 2.f;
 
-        //        std::printf("0x%x %f\n", a.color, av(2));
-        //        std::printf("0x%x %f\n", b.color, bv(2));
-        //        std::printf("0x%x %f\n", c.color, cv(2));
-
         raster.addVertex(av(0), av(1), a.color, av(2), a.u, a.v);
         raster.addVertex(bv(0), bv(1), b.color, bv(2), b.u, b.v);
         raster.addVertex(cv(0), cv(1), c.color, cv(2), c.u, c.v);
-
-        //        return;
-
-
-        //        prim.drawTriangle(av(0), av(1), a.color, bv(0), bv(1), b.color, cv(0), cv(1), c.color);
     }//for
 
 }
