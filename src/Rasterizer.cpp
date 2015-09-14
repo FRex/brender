@@ -116,8 +116,9 @@ void Rasterizer::rasterize()
     {
         float x1 = m_vertices[i].x;
         float y1 = m_vertices[i].y;
-        float r1, g1, b1;
-        decomposeColorF(m_vertices[i].color, r1, g1, b1);
+        float r1 = m_vertices[i].r;
+        float g1 = m_vertices[i].g;
+        float b1 = m_vertices[i].b;
         float d1 = m_vertices[i].depth;
         r1 /= d1;
         g1 /= d1;
@@ -128,8 +129,9 @@ void Rasterizer::rasterize()
 
         float x2 = m_vertices[i + 1].x;
         float y2 = m_vertices[i + 1].y;
-        float r2, g2, b2;
-        decomposeColorF(m_vertices[i + 1].color, r2, g2, b2);
+        float r2 = m_vertices[i + 1].r;
+        float g2 = m_vertices[i + 1].g;
+        float b2 = m_vertices[i + 1].b;
         float d2 = m_vertices[i + 1].depth;
         r2 /= d2;
         g2 /= d2;
@@ -140,8 +142,9 @@ void Rasterizer::rasterize()
 
         float x3 = m_vertices[i + 2].x;
         float y3 = m_vertices[i + 2].y;
-        float r3, g3, b3;
-        decomposeColorF(m_vertices[i + 2].color, r3, g3, b3);
+        float r3 = m_vertices[i + 2].r;
+        float g3 = m_vertices[i + 2].g;
+        float b3 = m_vertices[i + 2].b;
         float d3 = m_vertices[i + 2].depth;
         r3 /= d3;
         g3 /= d3;
@@ -217,7 +220,7 @@ void Rasterizer::addVertex(int x, int y, unsigned color, float depth, float u, f
     Vertex2 vert;
     vert.x = x;
     vert.y = y;
-    vert.color = color;
+    decomposeColorF(color, vert.r, vert.g, vert.b);
     vert.depth = depth;
     vert.u = u;
     vert.v = v;

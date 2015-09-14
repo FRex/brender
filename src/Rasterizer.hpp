@@ -32,8 +32,8 @@ private:
     class Vertex2
     {
     public:
-        int x, y;
-        unsigned color;
+        float x, y;
+        float r, g, b;
         float depth;
         float u;
         float v;
