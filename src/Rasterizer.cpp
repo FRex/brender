@@ -72,12 +72,12 @@ static inline unsigned mul2colors(unsigned c1, unsigned c2)
     return (rf << 16) + (gf << 8) + bf;
 }
 
-static void adjustToView(int& x1, int& y1, int& x2, int& y2)
+static void adjustToView(float& x1, float& y1, float& x2, float& y2)
 {
-    x1 = std::max(0, std::min(x1, 640 - 1));
-    y1 = std::max(0, std::min(y1, 480 - 1));
-    x2 = std::max(0, std::min(x2, 640 - 1));
-    y2 = std::max(0, std::min(y2, 480 - 1));
+    x1 = std::max(0.f, std::min(x1, 639.f));
+    y1 = std::max(0.f, std::min(y1, 479.f));
+    x2 = std::max(0.f, std::min(x2, 639.f));
+    y2 = std::max(0.f, std::min(y2, 479.f));
 }
 
 static unsigned rgbf(float r, float g, float b)
@@ -114,8 +114,8 @@ void Rasterizer::rasterize()
 
     for(int i = 0; i < (int)m_vertices.size(); i += 3)
     {
-        int x1 = m_vertices[i].x;
-        int y1 = m_vertices[i].y;
+        float x1 = m_vertices[i].x;
+        float y1 = m_vertices[i].y;
         float r1, g1, b1;
         decomposeColorF(m_vertices[i].color, r1, g1, b1);
         float d1 = m_vertices[i].depth;
@@ -126,8 +126,8 @@ void Rasterizer::rasterize()
         float v1 = m_vertices[i].v / d1;
         float d1i = 1.f / m_vertices[i].depth;
 
-        int x2 = m_vertices[i + 1].x;
-        int y2 = m_vertices[i + 1].y;
+        float x2 = m_vertices[i + 1].x;
+        float y2 = m_vertices[i + 1].y;
         float r2, g2, b2;
         decomposeColorF(m_vertices[i + 1].color, r2, g2, b2);
         float d2 = m_vertices[i + 1].depth;
@@ -138,8 +138,8 @@ void Rasterizer::rasterize()
         float v2 = m_vertices[i + 1].v / d2;
         float d2i = 1.f / m_vertices[i + 1].depth;
 
-        int x3 = m_vertices[i + 2].x;
-        int y3 = m_vertices[i + 2].y;
+        float x3 = m_vertices[i + 2].x;
+        float y3 = m_vertices[i + 2].y;
         float r3, g3, b3;
         decomposeColorF(m_vertices[i + 2].color, r3, g3, b3);
         float d3 = m_vertices[i + 2].depth;
@@ -155,18 +155,18 @@ void Rasterizer::rasterize()
         if(d1 < 0.f || d2 < 0.f || d3 < 0.f)
             continue;
 
-        int maxX = max(x1, x2, x3);
-        int minX = min(x1, x2, x3);
-        int maxY = max(y1, y2, y3);
-        int minY = min(y1, y2, y3);
+        float maxX = max(x1, x2, x3);
+        float minX = min(x1, x2, x3);
+        float maxY = max(y1, y2, y3);
+        float minY = min(y1, y2, y3);
 
 
         //clip
         adjustToView(minX, minY, maxX, maxY);
 
-        for(int x = minX; x <= maxX; ++x)
+        for(float x = minX; x <= maxX; x += 1.f)
         {
-            for(int y = minY; y <= maxY; ++y)
+            for(float y = minY; y <= maxY; y += 1.f)
             {
                 //                const float w2 = crossProduct(x - x1, y - y1, x3 - x1, y3 - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 //                const float w3 = crossProduct(x2 - x1, y2 - y1, x - x1, y - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
@@ -185,17 +185,16 @@ void Rasterizer::rasterize()
                         const float b = (b1 * w1 + b2 * w2 + b3 * w3) / depthi;
                         const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3) / depthi;
                         const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3) / depthi;
-                        const unsigned texel = getTexel(u, v);
                         switch(m_mode)
                         {
                             case ERM_COLORS:
                                 setPixel(x, y, rgbf(r, g, b), depth);
                                 break;
                             case ERM_TEXTURES:
-                                setPixel(x, y, texel, depth);
+                                setPixel(x, y, getTexel(u, v), depth);
                                 break;
                             case ERM_COLORS_TEXTURES:
-                                setPixel(x, y, mul2colors(rgbf(r, g, b), texel), depth);
+                                setPixel(x, y, mul2colors(rgbf(r, g, b), getTexel(u, v)), depth);
                                 break;
                             case ERM_UV_RED_BLUE:
                                 setPixel(x, y, rgbf(u, 0.f, v), depth);
