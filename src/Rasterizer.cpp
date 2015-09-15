@@ -177,11 +177,10 @@ void Rasterizer::rasterize()
                 const float x31 = x3 - x1;
                 const float y31 = y3 - y1;
                 const float x21 = x2 - x1;
+                const float bot = ((x21)*(y31)-(y21)*(x31));
 
-
-
-                w2 = ((x - x1)*(y31)-(y - y1)*(x31)) / ((x21)*(y31)-(y21)*(x31));
-                w3 = ((x21)*(y - y1)-(y21)*(x - x1)) / ((x21)*(y31)-(y21)*(x31));
+                w2 = ((x - x1)*(y31)-(y - y1)*(x31)) / bot;
+                w3 = ((x21)*(y - y1)-(y21)*(x - x1)) / bot;
                 if((w2 >= 0.f) && (w3 >= 0.f) && (w2 + w3 <= 1.f))
                 {
                     w1 = 1.f - w2 - w3;
