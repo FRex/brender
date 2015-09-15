@@ -217,6 +217,9 @@ int main(int argc, char ** argv)
                     case ' ':
                         bras.toggleRenderMode();
                         break;
+                    case 't':
+                        bras.toggleSkipDepth();
+                        break;
                 }
             }
         }//while sdl poll event eve
@@ -224,7 +227,7 @@ int main(int argc, char ** argv)
 
         std::printf("R: %f, %f, %f\n", rotx, roty, rotz);
         std::printf("T: %f, %f, %f\n", tx, ty, tz);
-        std::printf("Mode: %s\n", modenames[bras.getRenderMode()]);
+        std::printf("Mode, depth: %s, %d\n", modenames[bras.getRenderMode()], bras.getSkipDetph());
 
         bras.clear();
 

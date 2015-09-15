@@ -23,6 +23,8 @@ public:
     void addVertex(int x, int y, unsigned color, float depth, float u, float v);
     void toggleRenderMode();
     int getRenderMode();
+    void toggleSkipDepth();
+    bool getSkipDetph() const;
 
 private:
     bool canSetPixel(int x, int y, float depth);
@@ -46,6 +48,7 @@ private:
     int m_texx;
     int m_texy;
     int m_mode;
+    bool m_skipdepth;
 };
 
 #endif	/* RASTERIZER_HPP */

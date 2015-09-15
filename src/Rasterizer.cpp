@@ -13,7 +13,8 @@ m_pixels(static_cast<unsigned*>(pixels))
 {
     int n;
     m_texture = stbi_load("texture.png", &m_texx, &m_texy, &n, 3);
-    m_mode = ERM_TEXTURES;
+    m_mode = ERM_COLORS;
+    m_skipdepth = false;
 }
 
 Rasterizer::~Rasterizer()
@@ -244,7 +245,7 @@ bool Rasterizer::canSetPixel(int x, int y, float depth)
     if(m_depthbuffer[x + y * 640] > depth)
         return true;
 
-    return false;
+    return m_skipdepth;
 }
 
 void Rasterizer::setPixel(int x, int y, unsigned color, float depth)
@@ -270,4 +271,14 @@ void Rasterizer::toggleRenderMode()
 int Rasterizer::getRenderMode()
 {
     return m_mode;
+}
+
+void Rasterizer::toggleSkipDepth()
+{
+    m_skipdepth = !m_skipdepth;
+}
+
+bool Rasterizer::getSkipDetph() const
+{
+    return m_skipdepth;
 }
