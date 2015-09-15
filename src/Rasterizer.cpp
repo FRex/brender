@@ -172,8 +172,15 @@ void Rasterizer::rasterize()
                 //                const float w2 = crossProduct(x - x1, y - y1, x3 - x1, y3 - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 //                const float w3 = crossProduct(x2 - x1, y2 - y1, x - x1, y - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 //unrolled:
-                w2 = ((x - x1)*(y3 - y1)-(y - y1)*(x3 - x1)) / ((x2 - x1)*(y3 - y1)-(y2 - y1)*(x3 - x1));
-                w3 = ((x2 - x1)*(y - y1)-(y2 - y1)*(x - x1)) / ((x2 - x1)*(y3 - y1)-(y2 - y1)*(x3 - x1));
+                const float y21 = y2 - y1;
+                const float x31 = x3 - x1;
+                const float y31 = y3 - y1;
+                const float x21 = x2 - x1;
+
+
+
+                w2 = ((x - x1)*(y31)-(y - y1)*(x31)) / ((x21)*(y31)-(y21)*(x31));
+                w3 = ((x21)*(y - y1)-(y21)*(x - x1)) / ((x21)*(y31)-(y21)*(x31));
                 if((w2 >= 0.f) && (w3 >= 0.f) && (w2 + w3 <= 1.f))
                 {
                     w1 = 1.f - w2 - w3;
