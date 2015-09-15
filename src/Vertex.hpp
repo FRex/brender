@@ -8,11 +8,15 @@
 #ifndef VERTEX_HPP
 #define	VERTEX_HPP
 
-#include <SFML/System/Vector3.hpp>
-#include <SFML/System/Vector2.hpp>
+class Vector3
+{
+public:
 
-typedef sf::Vector3f Vector3;
-typedef sf::Vector2f Vector2;
+    Vector3() : x(0.f), y(1.f), z(0.f) { }
+
+    Vector3(float x, float y, float z) : x(x), y(y), z(z) { }
+    float x, y, z;
+};
 
 class Vertex
 {
@@ -22,7 +26,10 @@ public:
 
     Vertex(Vector3 position, unsigned color, float u, float v) : position(position), color(color), u(u), v(v) { }
 
+    Vertex(Vector3 position, Vector3 normal, unsigned color, float u = 0.f, float v = 0.f) : position(position), normal(normal), color(color), u(u), v(v) { }
+
     Vector3 position;
+    Vector3 normal;
     unsigned color;
     float u;
     float v;
