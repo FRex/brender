@@ -112,82 +112,80 @@ void Rasterizer::rasterize()
     for(int i = 0; i < 640 * 480; ++i)
         m_pixels[i] = 0x202020; //very dark gray
 
+    float x1, y1, r1, g1, b1, d1, d1i, u1, v1;
+    float x2, y2, r2, g2, b2, d2, d2i, u2, v2;
+    float x3, y3, r3, g3, b3, d3, d3i, u3, v3;
+    float maxX, maxY, minX, minY;
+    float x, y;
+    float w1, w2, w3;
+    float r, g, b, depth, depthi, u, v;
     for(int i = 0; i < (int)m_vertices.size(); i += 3)
     {
-        float x1 = m_vertices[i].x;
-        float y1 = m_vertices[i].y;
-        float r1 = m_vertices[i].r;
-        float g1 = m_vertices[i].g;
-        float b1 = m_vertices[i].b;
-        float d1 = m_vertices[i].depth;
-        r1 /= d1;
-        g1 /= d1;
-        b1 /= d1;
-        float u1 = m_vertices[i].u / d1;
-        float v1 = m_vertices[i].v / d1;
-        float d1i = 1.f / m_vertices[i].depth;
+        x1 = m_vertices[i].x;
+        y1 = m_vertices[i].y;
+        r1 = m_vertices[i].r;
+        g1 = m_vertices[i].g;
+        b1 = m_vertices[i].b;
+        d1 = m_vertices[i].depth;
+        u1 = m_vertices[i].u;
+        v1 = m_vertices[i].v;
+        d1i = 1.f / m_vertices[i].depth;
 
-        float x2 = m_vertices[i + 1].x;
-        float y2 = m_vertices[i + 1].y;
-        float r2 = m_vertices[i + 1].r;
-        float g2 = m_vertices[i + 1].g;
-        float b2 = m_vertices[i + 1].b;
-        float d2 = m_vertices[i + 1].depth;
-        r2 /= d2;
-        g2 /= d2;
-        b2 /= d2;
-        float u2 = m_vertices[i + 1].u / d2;
-        float v2 = m_vertices[i + 1].v / d2;
-        float d2i = 1.f / m_vertices[i + 1].depth;
+        x2 = m_vertices[i + 1].x;
+        y2 = m_vertices[i + 1].y;
+        r2 = m_vertices[i + 1].r;
+        g2 = m_vertices[i + 1].g;
+        b2 = m_vertices[i + 1].b;
+        d2 = m_vertices[i + 1].depth;
+        u2 = m_vertices[i + 1].u;
+        v2 = m_vertices[i + 1].v;
+        d2i = 1.f / m_vertices[i + 1].depth;
 
-        float x3 = m_vertices[i + 2].x;
-        float y3 = m_vertices[i + 2].y;
-        float r3 = m_vertices[i + 2].r;
-        float g3 = m_vertices[i + 2].g;
-        float b3 = m_vertices[i + 2].b;
-        float d3 = m_vertices[i + 2].depth;
-        r3 /= d3;
-        g3 /= d3;
-        b3 /= d3;
-        float u3 = m_vertices[i + 2].u / d3;
-        float v3 = m_vertices[i + 2].v / d3;
-        float d3i = 1.f / m_vertices[i + 2].depth;
+        x3 = m_vertices[i + 2].x;
+        y3 = m_vertices[i + 2].y;
+        r3 = m_vertices[i + 2].r;
+        g3 = m_vertices[i + 2].g;
+        b3 = m_vertices[i + 2].b;
+        d3 = m_vertices[i + 2].depth;
+        u3 = m_vertices[i + 2].u;
+        v3 = m_vertices[i + 2].v;
+        d3i = 1.f / m_vertices[i + 2].depth;
 
         //don't render triangles that might have been incorrectly
         //casted due to being behind the camera
         if(d1 < 0.f || d2 < 0.f || d3 < 0.f)
             continue;
 
-        float maxX = max(x1, x2, x3);
-        float minX = min(x1, x2, x3);
-        float maxY = max(y1, y2, y3);
-        float minY = min(y1, y2, y3);
+        maxX = max(x1, x2, x3);
+        minX = min(x1, x2, x3);
+        maxY = max(y1, y2, y3);
+        minY = min(y1, y2, y3);
 
 
         //clip
         adjustToView(minX, minY, maxX, maxY);
 
-        for(float x = minX; x <= maxX; x += 1.f)
+        for(x = minX; x <= maxX; x += 1.f)
         {
-            for(float y = minY; y <= maxY; y += 1.f)
+            for(y = minY; y <= maxY; y += 1.f)
             {
                 //                const float w2 = crossProduct(x - x1, y - y1, x3 - x1, y3 - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 //                const float w3 = crossProduct(x2 - x1, y2 - y1, x - x1, y - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 //unrolled:
-                const float w2 = ((x - x1)*(y3 - y1)-(y - y1)*(x3 - x1)) / (float)((x2 - x1)*(y3 - y1)-(y2 - y1)*(x3 - x1));
-                const float w3 = ((x2 - x1)*(y - y1)-(y2 - y1)*(x - x1)) / (float)((x2 - x1)*(y3 - y1)-(y2 - y1)*(x3 - x1));
+                w2 = ((x - x1)*(y3 - y1)-(y - y1)*(x3 - x1)) / ((x2 - x1)*(y3 - y1)-(y2 - y1)*(x3 - x1));
+                w3 = ((x2 - x1)*(y - y1)-(y2 - y1)*(x - x1)) / ((x2 - x1)*(y3 - y1)-(y2 - y1)*(x3 - x1));
                 if((w2 >= 0.f) && (w3 >= 0.f) && (w2 + w3 <= 1.f))
                 {
-                    const float w1 = 1.f - w2 - w3;
-                    const float depth = d1 * w1 + d2 * w2 + d3 * w3;
-                    const float depthi = d1i * w1 + d2i * w2 + d3i * w3;
+                    w1 = 1.f - w2 - w3;
+                    depth = d1 * w1 + d2 * w2 + d3 * w3;
+                    depthi = d1i * w1 + d2i * w2 + d3i * w3;
                     if(canSetPixel(x, y, depth))
                     {
-                        const float r = (r1 * w1 + r2 * w2 + r3 * w3) / depthi;
-                        const float g = (g1 * w1 + g2 * w2 + g3 * w3) / depthi;
-                        const float b = (b1 * w1 + b2 * w2 + b3 * w3) / depthi;
-                        const float u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3) / depthi;
-                        const float v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3) / depthi;
+                        r = (r1 * w1 + r2 * w2 + r3 * w3) / depthi;
+                        g = (g1 * w1 + g2 * w2 + g3 * w3) / depthi;
+                        b = (b1 * w1 + b2 * w2 + b3 * w3) / depthi;
+                        u = normalizeTCoords(u1 * w1 + u2 * w2 + u3 * w3) / depthi;
+                        v = normalizeTCoords(v1 * w1 + v2 * w2 + v3 * w3) / depthi;
                         switch(m_mode)
                         {
                             case ERM_COLORS:
@@ -221,9 +219,12 @@ void Rasterizer::addVertex(int x, int y, unsigned color, float depth, float u, f
     vert.x = x;
     vert.y = y;
     decomposeColorF(color, vert.r, vert.g, vert.b);
+    vert.r /= depth;
+    vert.g /= depth;
+    vert.b /= depth;
     vert.depth = depth;
-    vert.u = u;
-    vert.v = v;
+    vert.u = u / depth;
+    vert.v = v / depth;
     m_vertices.push_back(vert);
 }
 
