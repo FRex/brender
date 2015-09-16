@@ -9,7 +9,7 @@
 using std::modf;
 
 Rasterizer::Rasterizer(void* pixels) :
-m_pixels(static_cast<unsigned*>(pixels))
+    m_pixels(static_cast<unsigned*>(pixels))
 {
     int n;
     m_texture = stbi_load("texture.png", &m_texx, &m_texy, &n, 3);
@@ -186,6 +186,11 @@ void Rasterizer::rasterize()
         maxY = max(y1, y2, y3);
         minY = min(y1, y2, y3);
 
+        const float y21 = y2 - y1;
+        const float x31 = x3 - x1;
+        const float y31 = y3 - y1;
+        const float x21 = x2 - x1;
+        const float bot = ((x21)*(y31)-(y21)*(x31));
 
         //clip
         adjustToView(minX, minY, maxX, maxY);
@@ -197,11 +202,6 @@ void Rasterizer::rasterize()
                 //                const float w2 = crossProduct(x - x1, y - y1, x3 - x1, y3 - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 //                const float w3 = crossProduct(x2 - x1, y2 - y1, x - x1, y - y1) / crossProduct(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
                 //unrolled:
-                const float y21 = y2 - y1;
-                const float x31 = x3 - x1;
-                const float y31 = y3 - y1;
-                const float x21 = x2 - x1;
-                const float bot = ((x21)*(y31)-(y21)*(x31));
 
                 w2 = ((x - x1)*(y31)-(y - y1)*(x31)) / bot;
                 w3 = ((x21)*(y - y1)-(y21)*(x - x1)) / bot;
