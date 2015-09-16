@@ -30,7 +30,7 @@ void makeCubeMesh(Mesh& mesh)
     //up && down
     mesh.addTriangle(3, 6, 2);
     mesh.addTriangle(3, 7, 6);
-    mesh.addTriangle(0, 1, 5);
+    mesh.addTriangle(0, 5, 1);
     mesh.addTriangle(0, 4, 5);
 
     if(1)
@@ -45,7 +45,7 @@ void makeCubeMesh(Mesh& mesh)
         mesh.addTriangle(7, 1, 5);
         mesh.addTriangle(7, 3, 1);
 
-        mesh.addTriangle(3, 1, 0);
+        mesh.addTriangle(3, 0, 1);
         mesh.addTriangle(3, 2, 0);
     }
 }
