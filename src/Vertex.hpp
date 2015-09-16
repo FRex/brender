@@ -31,7 +31,7 @@ public:
 
     Vertex(Vector3 position, unsigned color, float u, float v) : position(position), color(color), u(u), v(v) { }
 
-    Vertex(Vector3 position, Vector3 normal, unsigned color) : position(position), normal(normal), color(color), u(0.f), v(0.f) { }
+    Vertex(Vector3 position, Vector3 normal, unsigned color, float u = 0.f, float v = 0.f) : position(position), normal(normal), color(color), u(u), v(v) { }
 
     Vector3 position;
     Vector3 normal;

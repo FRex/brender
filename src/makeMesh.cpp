@@ -1,5 +1,12 @@
 #include "makeMesh.hpp"
 #include "Mesh.hpp"
+#include <cmath>
+
+static inline Vector3 normalVec(float x, float y, float z)
+{
+    const float len = std::sqrt(x * x + y * y + z * z);
+    return Vector3(x / len, y / len, z / len);
+}
 
 void makeCubeMesh(Mesh& mesh)
 {
@@ -17,15 +24,15 @@ void makeCubeMesh(Mesh& mesh)
         0x000000, //7 = black
     };
 
-    mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, -kCubeSide), colors[0], -1.f, -1.f)); //0
-    mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, kCubeSide), colors[1], 1.f, -1.f)); //1
-    mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, -kCubeSide), colors[2], -1.f, 1.f)); //2
-    mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, kCubeSide), colors[3], 1.f, 1.f)); //3
+    mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, -kCubeSide), normalVec(-1.f, -1.f, -1.f), colors[0], -1.f, -1.f)); //0
+    mesh.addVertex(Vertex(Vector3(-kCubeSide, -kCubeSide, kCubeSide), normalVec(-1.f, -1.f, 1.f), colors[1], 1.f, -1.f)); //1
+    mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, -kCubeSide), normalVec(-1.f, 1.f, -1.f), colors[2], -1.f, 1.f)); //2
+    mesh.addVertex(Vertex(Vector3(-kCubeSide, kCubeSide, kCubeSide), normalVec(-1.f, 1.f, 1.f), colors[3], 1.f, 1.f)); //3
 
-    mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, -kCubeSide), colors[4], 1.f, -1.f)); //4
-    mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, kCubeSide), colors[5], -1.f, -1.f)); //5
-    mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, -kCubeSide), colors[6], 1.f, 1.f)); //6
-    mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, kCubeSide), colors[7], -1.f, 1.f)); //7
+    mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, -kCubeSide), normalVec(1.f, -1.f, -1.f), colors[4], 1.f, -1.f)); //4
+    mesh.addVertex(Vertex(Vector3(kCubeSide, -kCubeSide, kCubeSide), normalVec(1.f, -1.f, 1.f), colors[5], -1.f, -1.f)); //5
+    mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, -kCubeSide), normalVec(1.f, 1.f, -1.f), colors[6], 1.f, 1.f)); //6
+    mesh.addVertex(Vertex(Vector3(kCubeSide, kCubeSide, kCubeSide), normalVec(1.f, 1.f, 1.f), colors[7], -1.f, 1.f)); //7
 
     //up && down
     mesh.addTriangle(3, 6, 2);
