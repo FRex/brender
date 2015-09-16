@@ -241,7 +241,7 @@ int main(int argc, char ** argv)
 
         std::printf("R: %f, %f, %f\n", rotx, roty, rotz);
         std::printf("T: %f, %f, %f\n", tx, ty, tz);
-        std::printf("Mode, depth, cull: %s, %s, %s\n", modenames[bras.getRenderMode()], tostr(bras.getSkipDetph()), cullnames[cull]);
+        std::printf("Mode, z-skip, cull: %s, %s, %s\n", modenames[bras.getRenderMode()], tostr(bras.getSkipDetph()), cullnames[cull]);
 
         bras.clear();
 
