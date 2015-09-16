@@ -44,12 +44,12 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
         switch(cull)
         {
             case ECM_BACKFACE:
-                skip = !skip;
-                break;
-            case ECM_FRONTFACE:
                 skip = skip;
                 break;
-            case ECM_NONE:
+            case ECM_FRONTFACE:
+                skip = !skip;
+                break;
+            default:
                 skip = false;
                 break;
         }//switch cull
