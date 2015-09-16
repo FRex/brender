@@ -16,10 +16,11 @@ public:
 
     BufferedVertice() { }
 
-    BufferedVertice(float x, float y, float z, unsigned c, float u, float v) :
-    x(x), y(y), z(z), c(c), u(u), v(v) { }
+    BufferedVertice(float x, float y, float z, unsigned c, float u, float v, float nx, float ny, float nz) :
+    x(x), y(y), z(z), c(c), u(u), v(v), nx(nx), ny(ny), nz(nz) { }
 
     float x, y, z;
+    float nx, ny, nz;
     unsigned c;
     float u, v;
 };

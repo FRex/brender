@@ -220,7 +220,7 @@ void Rasterizer::clear()
     m_vertices.clear();
 }
 
-void Rasterizer::addVertex(int x, int y, unsigned color, float depth, float u, float v)
+void Rasterizer::addVertex(int x, int y, unsigned color, float depth, float u, float v, float nx, float ny, float nz)
 {
     Vertex2 vert;
     vert.x = x;
@@ -232,6 +232,9 @@ void Rasterizer::addVertex(int x, int y, unsigned color, float depth, float u, f
     vert.depth = depth;
     vert.u = u / depth;
     vert.v = v / depth;
+    vert.nx = nx;
+    vert.ny = ny;
+    vert.nz = nz;
     m_vertices.push_back(vert);
 }
 

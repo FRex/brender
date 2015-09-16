@@ -9,7 +9,10 @@ enum ERENDER_MODE
     ERM_COLORS,
     ERM_COLORS_TEXTURES,
     ERM_UV_RED_BLUE,
-
+    ERM_LIGHT,
+    ERM_LIGHT_COLOR,
+    ERM_LIGHT_COLOR_TEXTURE,
+    
     ERENDER_MODE_COUNT //keep last
 };
 
@@ -20,7 +23,7 @@ public:
     ~Rasterizer();
     void rasterize();
     void clear();
-    void addVertex(int x, int y, unsigned color, float depth, float u, float v);
+    void addVertex(int x, int y, unsigned color, float depth, float u, float v, float nx, float ny, float nz);
     void toggleRenderMode();
     int getRenderMode();
     void toggleSkipDepth();
@@ -39,6 +42,7 @@ private:
         float depth;
         float u;
         float v;
+        float nx, ny, nz;
     };
 
     std::vector<Vertex2> m_vertices;

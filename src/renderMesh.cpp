@@ -14,6 +14,7 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
     const unsigned idxc = mesh.getIndexCount();
     const unsigned vc = mesh.getVertexCount();
     arma::vec4 av;
+    arma::vec4 nv;
 
     buff.clear();
 
@@ -27,10 +28,16 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
         av(3) = 1.f;
         av = mat * av;
 
+        nv(0) = a.normal.x;
+        nv(1) = a.normal.y;
+        nv(2) = a.normal.z;
+        nv(3) = 1.f;
+        nv = mat * nv;
+
         av(0) = av(0) * (kProjPlaneDist / std::fabs(av(2))) + halfscreenwidth;
         av(1) = av(1) * (kProjPlaneDist / std::fabs(av(2))) + halfscreenheight;
 
-        buff.push_back(BufferedVertice(av(0), av(1), av(2), a.color, a.u, a.v));
+        buff.push_back(BufferedVertice(av(0), av(1), av(2), a.color, a.u, a.v, nv(0), nv(1), nv(2)));
 
     }//for
 
@@ -58,9 +65,9 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
             ++culled;
             continue;
         }
-        raster.addVertex(a.x, a.y, a.c, a.z, a.u, a.v);
-        raster.addVertex(b.x, b.y, b.c, b.z, b.u, b.v);
-        raster.addVertex(c.x, c.y, c.c, c.z, c.u, c.v);
+        raster.addVertex(a.x, a.y, a.c, a.z, a.u, a.v, a.nx, a.ny, a.nz);
+        raster.addVertex(b.x, b.y, b.c, b.z, b.u, b.v, b.nx, b.ny, b.nz);
+        raster.addVertex(c.x, c.y, c.c, c.z, c.u, c.v, c.nx, c.ny, c.nz);
     }//for
     std::printf("CULLED: %d\n", culled);
 }

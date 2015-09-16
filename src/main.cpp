@@ -97,6 +97,7 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
     unsigned idx;
     float x, y, z;
     file >> scale >> icount >> vcount;
+    Vector3 normal;
 
     for(int i = 0; i < icount; ++i)
     {
@@ -107,13 +108,14 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
     for(int i = 0; i < vcount; ++i)
     {
         file >> x >> y >> z;
+        file >> normal.x >> normal.y >> normal.z;
         if(rnd)
         {
             mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rndrgb()));
         }
         else
         {
-            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rgbf(x, y, z)));
+            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), normal, rgbf(x, y, z)));
         }
     }
     std::printf("vertices, indices, scale = (%u, %u, %f)\n", vcount, icount, scale);
@@ -124,6 +126,9 @@ const char * modenames[] = {
     "ERM_COLORS",
     "ERM_COLORS_TEXTURES",
     "ERM_UV_RED_BLUE",
+    "ERM_LIGHT",
+    "ERM_LIGHT_COLOR",
+    "ERM_LIGHT_COLOR_TEXTURE",
 };
 const char * cullnames[] = {
     "ECM_BACKFACE",
