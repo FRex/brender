@@ -40,20 +40,26 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
         const BufferedVertice& a = buff[idxs[i]];
         const BufferedVertice& b = buff[idxs[i + 1]];
         const BufferedVertice& c = buff[idxs[i + 2]];
-        if(cull && cw(a, b, c))
+        const float cos = cw(a, b, c);
+        unsigned color = (cos * 255.f);
+        if(cull && cos > 0.f)
         {
             ++culled;
 
-
-            raster.addVertex(a.x, a.y, 0x0, a.z, a.u, a.v);
-            raster.addVertex(b.x, b.y, 0x0, b.z, b.u, b.v);
-            raster.addVertex(c.x, c.y, 0x0, c.z, c.u, c.v);
-
+            raster.addVertex(a.x, a.y, color, a.z, a.u, a.v);
+            raster.addVertex(b.x, b.y, color, b.z, b.u, b.v);
+            raster.addVertex(c.x, c.y, color, c.z, c.u, c.v);
             continue;
         }
-        raster.addVertex(a.x, a.y, a.c, a.z, a.u, a.v);
-        raster.addVertex(b.x, b.y, b.c, b.z, b.u, b.v);
-        raster.addVertex(c.x, c.y, c.c, c.z, c.u, c.v);
+
+        color <<= 8;
+        raster.addVertex(a.x, a.y, color, a.z, a.u, a.v);
+        raster.addVertex(b.x, b.y, color, b.z, b.u, b.v);
+        raster.addVertex(c.x, c.y, color, c.z, c.u, c.v);
+
+        //        raster.addVertex(a.x, a.y, a.c, a.z, a.u, a.v);
+        //        raster.addVertex(b.x, b.y, b.c, b.z, b.u, b.v);
+        //        raster.addVertex(c.x, c.y, c.c, c.z, c.u, c.v);
     }//for
     std::printf("CULLED: %d\n", culled);
 }

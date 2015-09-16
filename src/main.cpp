@@ -136,7 +136,7 @@ int main(int argc, char ** argv)
     std::srand(std::time(0x0));
     SDL_Window * win = NULL;
     SDL_Surface * sur = NULL;
-    bool cull = false;
+    bool cull = true;
     int run = 1;
     SDL_Event eve;
     SDL_Init(SDL_INIT_VIDEO);
