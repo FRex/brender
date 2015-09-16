@@ -251,7 +251,9 @@ int main(int argc, char ** argv)
 
         bras.clear();
 
-        draw(bras, mesh, translate(tx, ty, tz) * rotateZ(rotz) * rotateY(roty) * rotateX(rotx), buffer, static_cast<ECULLING_MODE>(cull));
+        arma::mat44 rotmat = rotateZ(rotz) * rotateY(roty) * rotateX(rotx);
+
+        draw(bras, mesh, translate(tx, ty, tz) * rotmat, rotmat, buffer, static_cast<ECULLING_MODE>(cull));
 
 
         bras.rasterize();

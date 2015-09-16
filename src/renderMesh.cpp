@@ -8,7 +8,8 @@ const float kProjPlaneDist = 320.f;
 const float halfscreenwidth = 640.f / 2.f;
 const float halfscreenheight = 480.f / 2.f;
 
-void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vector<BufferedVertice>& buff, ECULLING_MODE cull)
+void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, const arma::mat44& rotmat,
+        std::vector<BufferedVertice>& buff, ECULLING_MODE cull)
 {
     const unsigned * idxs = mesh.getIndices();
     const unsigned idxc = mesh.getIndexCount();
@@ -32,7 +33,7 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
         nv(1) = a.normal.y;
         nv(2) = a.normal.z;
         nv(3) = 1.f;
-        nv = mat * nv;
+        nv = rotmat * nv;
 
         av(0) = av(0) * (kProjPlaneDist / std::fabs(av(2))) + halfscreenwidth;
         av(1) = av(1) * (kProjPlaneDist / std::fabs(av(2))) + halfscreenheight;

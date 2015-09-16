@@ -89,6 +89,17 @@ static unsigned rgbf(float r, float g, float b)
     return (rf << 16) + (gf << 8) + bf;
 }
 
+static unsigned rgbfabs(float r, float g, float b)
+{
+    r = std::fabs(r);
+    g = std::fabs(g);
+    b = std::fabs(b);
+    const int rf = std::max(0, std::min<int>(255, r * 255.f));
+    const int gf = std::max(0, std::min<int>(255, g * 255.f));
+    const int bf = std::max(0, std::min<int>(255, b * 255.f));
+    return (rf << 16) + (gf << 8) + bf;
+}
+
 static float normalizeTCoords(float x)
 {
     float u;
@@ -228,10 +239,10 @@ void Rasterizer::rasterize()
                                 setPixel(x, y, rgbf(u, 0.f, v), depth);
                                 break;
                             case ERM_NORMALS:
-                                setPixel(x, y, rgbf(nx, ny, nz), depth);
+                                setPixel(x, y, rgbfabs(nx, ny, nz), depth);
                                 break;
                             case ERM_LIGHT:
-                                setPixel(x, y, rgbf(lum, lum, lum), depth);
+
                                 break;
                             case ERM_LIGHT_COLOR:
 

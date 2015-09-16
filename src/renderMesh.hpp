@@ -17,7 +17,8 @@ enum ECULLING_MODE
     ECULLING_MODE_COUNT
 };
 
-void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vector<BufferedVertice>& buff, ECULLING_MODE cull);
+void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, const arma::mat44& rotmat,
+        std::vector<BufferedVertice>& buff, ECULLING_MODE cull);
 
 #endif	/* RENDER_MESH_HPP */
 
