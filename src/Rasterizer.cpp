@@ -135,7 +135,6 @@ void Rasterizer::rasterize()
     float nx2, ny2, nz2;
     float nx3, ny3, nz3;
     float nx, ny, nz;
-    float lum;
     for(int i = 0; i < (int)m_vertices.size(); i += 3)
     {
         x1 = m_vertices[i].x;
@@ -149,7 +148,7 @@ void Rasterizer::rasterize()
         d1i = 1.f / m_vertices[i].depth;
         nx1 = m_vertices[i].nx;
         ny1 = m_vertices[i].ny;
-        nz1 = m_vertices[i].ny;
+        nz1 = m_vertices[i].nz;
 
         x2 = m_vertices[i + 1].x;
         y2 = m_vertices[i + 1].y;
@@ -162,7 +161,7 @@ void Rasterizer::rasterize()
         d2i = 1.f / m_vertices[i + 1].depth;
         nx2 = m_vertices[i + 1].nx;
         ny2 = m_vertices[i + 1].ny;
-        nz2 = m_vertices[i + 1].ny;
+        nz2 = m_vertices[i + 1].nz;
 
         x3 = m_vertices[i + 2].x;
         y3 = m_vertices[i + 2].y;
@@ -175,7 +174,7 @@ void Rasterizer::rasterize()
         d3i = 1.f / m_vertices[i + 2].depth;
         nx3 = m_vertices[i + 2].nx;
         ny3 = m_vertices[i + 2].ny;
-        nz3 = m_vertices[i + 2].ny;
+        nz3 = m_vertices[i + 2].nz;
 
         //don't render triangles that might have been incorrectly
         //casted due to being behind the camera
@@ -221,9 +220,6 @@ void Rasterizer::rasterize()
                         nx = (nx1 * w1 + nx2 * w2 + nx3 * w3);
                         ny = (ny1 * w1 + ny2 * w2 + ny3 * w3);
                         nz = (nz1 * w1 + nz2 * w2 + nz3 * w3);
-
-                        lum = std::fabs(nz);
-
                         switch(m_mode)
                         {
                             case ERM_COLORS:
@@ -242,13 +238,14 @@ void Rasterizer::rasterize()
                                 setPixel(x, y, rgbfabs(nx, ny, nz), depth);
                                 break;
                             case ERM_LIGHT:
-
+                                //dot prod with above would give just -z if we use 0 0 -1 vector
+                                setPixel(x, y, rgbf(-nz, -nz, -nz), depth);
                                 break;
                             case ERM_LIGHT_COLOR:
-
+                                setPixel(x, y, rgbf(r * -nz, g * -nz, b * -nz), depth);
                                 break;
                             case ERM_LIGHT_COLOR_TEXTURE:
-
+                                setPixel(x, y, mul2colors(rgbf(r * -nz, g * -nz, b * -nz), getTexel(u, v)), depth);
                                 break;
                         }//switch m_mode
                     }//can set pixel
