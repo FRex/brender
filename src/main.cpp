@@ -10,6 +10,16 @@
 #include "renderMesh.hpp"
 #include "makeMesh.hpp"
 
+arma::mat44 scale(float x, float y, float z)
+{
+    arma::mat44 ret = arma::zeros(4u, 4u);
+    ret(0, 0) = x;
+    ret(1, 1) = y;
+    ret(2, 2) = z;
+    ret(3, 3) = 1.f;
+    return ret;
+}
+
 arma::mat44 translate(float x, float y, float z)
 {
     arma::mat44 ret = arma::zeros(4u, 4u);
@@ -189,7 +199,9 @@ int main(int argc, char ** argv)
     float rotx = 0.f;
     float roty = 0.f;
     float rotz = 0.f;
-
+    float sx = 1.f;
+    float sy = 1.f;
+    float sz = 1.f;
 
     while(run)
     {
@@ -243,11 +255,29 @@ int main(int argc, char ** argv)
                     case ' ':
                         bras.toggleRenderMode();
                         break;
-                    case 't':
+                    case 'x':
                         bras.toggleSkipDepth();
                         break;
                     case 'c':
                         cull = (cull + 1) % ECULLING_MODE_COUNT;
+                        break;
+                    case 't':
+                        sx += 0.1f;
+                        break;
+                    case 'g':
+                        sx -= 0.1f;
+                        break;
+                    case 'f':
+                        sz += 0.1f;
+                        break;
+                    case 'h':
+                        sz -= 0.1f;
+                        break;
+                    case 'r':
+                        sy += 0.1f;
+                        break;
+                    case 'y':
+                        sy -= 0.1f;
                         break;
                 }
             }
@@ -256,11 +286,12 @@ int main(int argc, char ** argv)
 
         std::printf("R: %f, %f, %f\n", rotx, roty, rotz);
         std::printf("T: %f, %f, %f\n", tx, ty, tz);
+        std::printf("S: %f, %f, %f\n", sx, sy, sz);
         std::printf("Mode, z-skip, cull: %s, %s, %s\n", modenames[bras.getRenderMode()], tostr(bras.getSkipDetph()), cullnames[cull]);
 
         bras.clear();
 
-        arma::mat44 rotmat = rotateZ(rotz) * rotateY(roty) * rotateX(rotx);
+        arma::mat44 rotmat = rotateZ(rotz) * rotateY(roty) * rotateX(rotx) * scale(sx, sy, sz);
 
         draw(bras, mesh, translate(tx, ty, tz) * rotmat, rotmat, buffer, static_cast<ECULLING_MODE>(cull));
 
