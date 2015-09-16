@@ -126,6 +126,7 @@ const char * modenames[] = {
     "ERM_COLORS",
     "ERM_COLORS_TEXTURES",
     "ERM_UV_RED_BLUE",
+    "ERM_NORMALS",
     "ERM_LIGHT",
     "ERM_LIGHT_COLOR",
     "ERM_LIGHT_COLOR_TEXTURE",
