@@ -13,9 +13,9 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
     const unsigned idxc = mesh.getIndexCount();
     const unsigned vc = mesh.getVertexCount();
     arma::vec4 av;
-    
+
     buff.clear();
-    
+
     for(int i = 0; i < vc; ++i)
     {
         const Vertex& a = mesh.getVertex(i);
@@ -33,9 +33,13 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
 
     }//for
 
-    for(int i = 0; i < idxc; ++i)
+    for(int i = 0; (i + 2) < idxc; i += 3)
     {
-        const BufferedVertice&v = buff[idxs[i]];
-        raster.addVertex(v.x, v.y, v.c, v.d, v.u, v.v);
+        const BufferedVertice& a = buff[idxs[i]];
+        const BufferedVertice& b = buff[idxs[i + 1]];
+        const BufferedVertice& c = buff[idxs[i + 2]];
+        raster.addVertex(a.x, a.y, a.c, a.d, a.u, b.v);
+        raster.addVertex(b.x, b.y, b.c, b.d, b.u, b.v);
+        raster.addVertex(c.x, c.y, c.c, c.d, c.u, c.v);
     }
 }
