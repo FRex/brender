@@ -308,6 +308,9 @@ void Rasterizer::setPixel(int x, int y, unsigned color, float depth)
 
 unsigned Rasterizer::getTexel(float u, float v) const
 {
+    if(!m_texture)
+        return 0x0;
+
     const int x = std::max(0, std::min<int>(round(u * m_texx), m_texx - 1));
     const int y = std::max(0, std::min<int>(round(v * m_texy), m_texy - 1));
     const unsigned char * tex = &m_texture[3 * (x + m_texx * y)];
@@ -332,4 +335,14 @@ void Rasterizer::toggleSkipDepth()
 bool Rasterizer::getSkipDetph() const
 {
     return m_skipdepth;
+}
+
+void Rasterizer::loadTexture(const char * tex)
+{
+    if(m_texture)
+        stbi_image_free(m_texture);
+
+    int n;
+    m_texture = stbi_load(tex, &m_texx, &m_texy, &n, 3);
+    std::printf("Loading texture %s: %d\n", tex, m_texture != 0x0);
 }

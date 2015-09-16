@@ -29,6 +29,7 @@ public:
     int getRenderMode();
     void toggleSkipDepth();
     bool getSkipDetph() const;
+    void loadTexture(const char * tex);
 
 private:
     bool canSetPixel(int x, int y, float depth);

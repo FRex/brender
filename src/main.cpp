@@ -86,9 +86,8 @@ static unsigned rgbf(float r, float g, float b)
     return (rf << 16) + (gf << 8) + bf;
 }
 
-void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
+void loadMesh(Mesh& mesh, const char * filename, int usernd, unsigned color)
 {
-    const bool rnd = (0 == std::strcmp(argv2, "random"));
     std::printf("Loading file: %s\n", filename);
     std::ifstream file(filename);
     mesh.clear();
@@ -96,6 +95,7 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
     unsigned icount, vcount;
     unsigned idx;
     float x, y, z;
+    float u, v;
     file >> scale >> icount >> vcount;
     Vector3 normal;
 
@@ -109,13 +109,18 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
     {
         file >> x >> y >> z;
         file >> normal.x >> normal.y >> normal.z;
-        if(rnd)
+        file >> u >> v;
+        if(usernd)
         {
-            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rndrgb()));
+            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rndrgb(), u, v));
+        }
+        else if(color == 0x0)
+        {
+            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), normal, rgbf(x, y, z), u, v));
         }
         else
         {
-            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), normal, rgbf(x, y, z)));
+            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), normal, color, u, v));
         }
     }
     std::printf("vertices, indices, scale = (%u, %u, %f)\n", vcount, icount, scale);
@@ -145,6 +150,23 @@ const char * tostr(bool b)
 int main(int argc, char ** argv)
 {
     std::srand(std::time(0x0));
+
+    Mesh mesh;
+    const char * texname = 0x0;
+    makeCubeMesh(mesh);
+
+    if(argc != 1 && argc != 5)
+    {
+        std::fprintf(stderr, "Usage: %s mesh rnd/not color texture\n", argv[0]);
+        return 1;
+    }
+    if(argc == 5)
+    {
+        loadMesh(mesh, argv[1], 0 == std::strcmp(argv[2], "rnd"), std::strtol(argv[3], 0x0, 16));
+        texname = argv[4];
+    }
+
+
     SDL_Window * win = NULL;
     SDL_Surface * sur = NULL;
     int cull = 0;
@@ -156,24 +178,11 @@ int main(int argc, char ** argv)
 
     std::vector<BufferedVertice> buffer;
     Rasterizer bras(sur->pixels);
+    if(texname)
+        bras.loadTexture(texname);
+
     printf("%s\n", SDL_GetPixelFormatName(sur->format->format));
 
-    Mesh mesh;
-    if(argc < 2)
-    {
-        makeCubeMesh(mesh);
-    }
-    else
-    {
-        if(argc < 3)
-        {
-            loadMesh(mesh, argv[1], "");
-        }
-        else
-        {
-            loadMesh(mesh, argv[1], argv[2]);
-        }
-    }
     float tx = 0.f;
     float ty = 0.f;
     float tz = 500.f;
