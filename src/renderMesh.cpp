@@ -2,26 +2,11 @@
 #include "Vertex.hpp"
 #include "Mesh.hpp"
 #include "Rasterizer.hpp"
+#include "culling.hpp"
 
 const float kProjPlaneDist = 320.f;
 const float halfscreenwidth = 640.f / 2.f;
 const float halfscreenheight = 480.f / 2.f;
-
-static inline Vector3 cross(float ax, float ay, float az, float bx, float by, float bz)
-{
-    return Vector3(ay * bz - az * by, az * bx - ax * bz, ax * by - ay * bx);
-}
-
-static inline float dot(Vector3 a, Vector3 b)
-{
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-static inline bool cw(const BufferedVertice& v0, const BufferedVertice& v1, const BufferedVertice& v2)
-{
-    const Vector3 n = cross(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z, v2.x - v0.x, v2.y - v0.y, v2.z - v0.z);
-    return dot(Vector3(v0.x, v0.y, v0.z), n) >= 0.f;
-}
 
 void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vector<BufferedVertice>& buff, bool cull)
 {
@@ -58,6 +43,12 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
         if(cull && cw(a, b, c))
         {
             ++culled;
+
+
+            raster.addVertex(a.x, a.y, 0x0, a.z, a.u, a.v);
+            raster.addVertex(b.x, b.y, 0x0, b.z, b.u, b.v);
+            raster.addVertex(c.x, c.y, 0x0, c.z, c.u, c.v);
+
             continue;
         }
         raster.addVertex(a.x, a.y, a.c, a.z, a.u, a.v);

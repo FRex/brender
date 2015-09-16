@@ -96,7 +96,6 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
     unsigned icount, vcount;
     unsigned idx;
     float x, y, z;
-    float nx, ny, nz;
     file >> scale >> icount >> vcount;
 
     for(int i = 0; i < icount; ++i)
@@ -108,14 +107,13 @@ void loadMesh(Mesh& mesh, const char * filename, const char * argv2)
     for(int i = 0; i < vcount; ++i)
     {
         file >> x >> y >> z;
-        file >> nx >> ny >> nz;
         if(rnd)
         {
             mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rndrgb()));
         }
         else
         {
-            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), Vector3(nx, ny, nz), rgbf(x, y, z)));
+            mesh.addVertex(Vertex(Vector3(scale * x, scale * y, scale * z), rgbf(x, y, z)));
         }
     }
     std::printf("vertices, indices, scale = (%u, %u, %f)\n", vcount, icount, scale);
@@ -127,6 +125,11 @@ const char * modenames[] = {
     "ERM_COLORS_TEXTURES",
     "ERM_UV_RED_BLUE",
 };
+
+const char * tostr(bool b)
+{
+    return b?"true":"false";
+}
 
 int main(int argc, char ** argv)
 {
@@ -233,7 +236,7 @@ int main(int argc, char ** argv)
 
         std::printf("R: %f, %f, %f\n", rotx, roty, rotz);
         std::printf("T: %f, %f, %f\n", tx, ty, tz);
-        std::printf("Mode, depth, cull: %s, %d, %s\n", modenames[bras.getRenderMode()], bras.getSkipDetph(), cull?"true":"false");
+        std::printf("Mode, depth, cull: %s, %s, %s\n", modenames[bras.getRenderMode()], tostr(bras.getSkipDetph()), tostr(cull));
 
         bras.clear();
 
