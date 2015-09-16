@@ -21,7 +21,7 @@ public:
     float d, u, v;
 };
 
-void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vector<BufferedVertice>& buff);
+void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vector<BufferedVertice>& buff, bool cull);
 
 #endif	/* RENDER_MESH_HPP */
 

@@ -7,7 +7,23 @@ const float kProjPlaneDist = 320.f;
 const float halfscreenwidth = 640.f / 2.f;
 const float halfscreenheight = 480.f / 2.f;
 
-void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vector<BufferedVertice>& buff)
+static inline Vector3 cross(Vector3 a, Vector3 p)
+{
+    return Vector3(a.y * p.z - a.z * p.y, a.z * p.x - a.x * p.z, a.x * p.y - a.y * p.x);
+}
+
+static inline float dot(Vector3 a, Vector3 b)
+{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+static inline bool cw(const Vertex& v0, const Vertex& v1, const Vertex& v2)
+{
+    const Vector3 n = cross(v1.position - v0.position, v2.position - v0.position);
+    return (-dot(v0.position, n)) >= 0.f;
+}
+
+void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vector<BufferedVertice>& buff, bool cull)
 {
     const unsigned * idxs = mesh.getIndices();
     const unsigned idxc = mesh.getIndexCount();
@@ -35,11 +51,20 @@ void draw(Rasterizer& raster, const Mesh& mesh, const arma::mat44& mat, std::vec
 
     for(int i = 0; (i + 2) < idxc; i += 3)
     {
-        const BufferedVertice& a = buff[idxs[i]];
-        const BufferedVertice& b = buff[idxs[i + 1]];
-        const BufferedVertice& c = buff[idxs[i + 2]];
-        raster.addVertex(a.x, a.y, a.c, a.d, a.u, b.v);
-        raster.addVertex(b.x, b.y, b.c, b.d, b.u, b.v);
-        raster.addVertex(c.x, c.y, c.c, c.d, c.u, c.v);
-    }
+        {
+            const Vertex& a = mesh.getVertex(idxs[i]);
+            const Vertex& b = mesh.getVertex(idxs[i + 1]);
+            const Vertex& c = mesh.getVertex(idxs[i + 2]);
+            if(cull && cw(a, b, c))
+                continue;
+        }
+        {
+            const BufferedVertice& a = buff[idxs[i]];
+            const BufferedVertice& b = buff[idxs[i + 1]];
+            const BufferedVertice& c = buff[idxs[i + 2]];
+            raster.addVertex(a.x, a.y, a.c, a.d, a.u, a.v);
+            raster.addVertex(b.x, b.y, b.c, b.d, b.u, b.v);
+            raster.addVertex(c.x, c.y, c.c, c.d, c.u, c.v);
+        }
+    }//for
 }

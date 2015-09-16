@@ -45,7 +45,7 @@ void makeCubeMesh(Mesh& mesh)
         mesh.addTriangle(7, 1, 5);
         mesh.addTriangle(7, 3, 1);
 
-        mesh.addTriangle(3, 0, 1);
+        mesh.addTriangle(3, 1, 0);
         mesh.addTriangle(3, 2, 0);
     }
 }

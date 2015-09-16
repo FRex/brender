@@ -65,7 +65,7 @@ arma::mat44 rotateZ(float y)
     return ret;
 }
 
-const float pi = 3.1415f; // ^_^...
+const float pi = 3.1415f;
 
 unsigned rndrgb()
 {
@@ -133,6 +133,7 @@ int main(int argc, char ** argv)
     std::srand(std::time(0x0));
     SDL_Window * win = NULL;
     SDL_Surface * sur = NULL;
+    bool cull = false;
     int run = 1;
     SDL_Event eve;
     SDL_Init(SDL_INIT_VIDEO);
@@ -222,6 +223,9 @@ int main(int argc, char ** argv)
                     case 't':
                         bras.toggleSkipDepth();
                         break;
+                    case 'c':
+                        cull = !cull;
+                        break;
                 }
             }
         }//while sdl poll event eve
@@ -229,11 +233,11 @@ int main(int argc, char ** argv)
 
         std::printf("R: %f, %f, %f\n", rotx, roty, rotz);
         std::printf("T: %f, %f, %f\n", tx, ty, tz);
-        std::printf("Mode, depth: %s, %d\n", modenames[bras.getRenderMode()], bras.getSkipDetph());
+        std::printf("Mode, depth, cull: %s, %d, %s\n", modenames[bras.getRenderMode()], bras.getSkipDetph(), cull?"true":"false");
 
         bras.clear();
 
-        draw(bras, mesh, translate(tx, ty, tz) * rotateZ(rotz) * rotateY(roty) * rotateX(rotx), buffer);
+        draw(bras, mesh, translate(tx, ty, tz) * rotateZ(rotz) * rotateY(roty) * rotateX(rotx), buffer, cull);
 
 
         bras.rasterize();
