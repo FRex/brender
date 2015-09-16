@@ -125,6 +125,11 @@ const char * modenames[] = {
     "ERM_COLORS_TEXTURES",
     "ERM_UV_RED_BLUE",
 };
+const char * cullnames[] = {
+    "ECM_BACKFACE",
+    "ECM_FRONTFACE",
+    "ECM_NONE",
+};
 
 const char * tostr(bool b)
 {
@@ -136,7 +141,7 @@ int main(int argc, char ** argv)
     std::srand(std::time(0x0));
     SDL_Window * win = NULL;
     SDL_Surface * sur = NULL;
-    bool cull = true;
+    int cull = 0;
     int run = 1;
     SDL_Event eve;
     SDL_Init(SDL_INIT_VIDEO);
@@ -227,7 +232,7 @@ int main(int argc, char ** argv)
                         bras.toggleSkipDepth();
                         break;
                     case 'c':
-                        cull = !cull;
+                        cull = (cull + 1) % ECULLING_MODE_COUNT;
                         break;
                 }
             }
@@ -236,11 +241,11 @@ int main(int argc, char ** argv)
 
         std::printf("R: %f, %f, %f\n", rotx, roty, rotz);
         std::printf("T: %f, %f, %f\n", tx, ty, tz);
-        std::printf("Mode, depth, cull: %s, %s, %s\n", modenames[bras.getRenderMode()], tostr(bras.getSkipDetph()), tostr(cull));
+        std::printf("Mode, depth, cull: %s, %s, %s\n", modenames[bras.getRenderMode()], tostr(bras.getSkipDetph()), cullnames[cull]);
 
         bras.clear();
 
-        draw(bras, mesh, translate(tx, ty, tz) * rotateZ(rotz) * rotateY(roty) * rotateX(rotx), buffer, cull);
+        draw(bras, mesh, translate(tx, ty, tz) * rotateZ(rotz) * rotateY(roty) * rotateX(rotx), buffer, static_cast<ECULLING_MODE>(cull));
 
 
         bras.rasterize();
