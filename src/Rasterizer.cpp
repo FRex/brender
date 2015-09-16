@@ -135,6 +135,7 @@ void Rasterizer::rasterize()
     float nx2, ny2, nz2;
     float nx3, ny3, nz3;
     float nx, ny, nz;
+    float y21, x31, y31, x21, bot;
     for(int i = 0; i < (int)m_vertices.size(); i += 3)
     {
         x1 = m_vertices[i].x;
@@ -186,11 +187,11 @@ void Rasterizer::rasterize()
         maxY = max(y1, y2, y3);
         minY = min(y1, y2, y3);
 
-        const float y21 = y2 - y1;
-        const float x31 = x3 - x1;
-        const float y31 = y3 - y1;
-        const float x21 = x2 - x1;
-        const float bot = ((x21)*(y31)-(y21)*(x31));
+        y21 = y2 - y1;
+        x31 = x3 - x1;
+        y31 = y3 - y1;
+        x21 = x2 - x1;
+        bot = ((x21)*(y31)-(y21)*(x31));
 
         //clip
         adjustToView(minX, minY, maxX, maxY);
